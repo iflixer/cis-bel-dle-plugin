@@ -11,8 +11,7 @@ class CDNHubApi
 		$this->config = $apiConfig;
 
 		if (!$this->config['domain']) {
-			// $this->config['domain'] = 'https://api.cdnhubstream.pro/';
-			$this->config['domain'] = 'https://bel-cdn.printhouse.casa/';
+			$this->config['domain'] = 'https://futmax.info/';
 		}
 
 		if ($this->config['domain'])
