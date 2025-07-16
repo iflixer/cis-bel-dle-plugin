@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dleplugin>
+	<name>CDNHub</name>
+	<description></description>
+	<icon>engine/skins/images/cdnhub.png</icon>
+	<version>3.1</version>
+	<dleversion></dleversion>
+	<versioncompare>less</versioncompare>
+	<upgradeurl></upgradeurl>
+	<filedelete>0</filedelete>
+	<needplugin></needplugin>
+	<mnotice>0</mnotice>
+	<mysqlinstall><![CDATA[INSERT INTO {prefix}_admin_sections (name, title, descr, icon, allow_groups) VALUES ('cdnhub', 'CDNHub', '', 'engine/skins/images/cdnhub.png', '1');
+
+CREATE TABLE IF NOT EXISTS `{prefix}_cdnhub_update` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `start_update` int(11) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE={engine} DEFAULT CHARACTER SET {charset} COLLATE {charset}_general_ci;
+INSERT INTO `{prefix}_cdnhub_update` (`id`, `start_update`) VALUES (1, 0);
+
+CREATE TABLE `{prefix}_cdnhub_update_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `update_id` int(11) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE={engine} DEFAULT CHARACTER SET {charset} COLLATE {charset}_general_ci;
+INSERT INTO `{prefix}_cdnhub_update_log` (`id`, `update_id`) VALUES (1, 0), (2, 0);
+
+CREATE TABLE `{prefix}_cdnhub_update_serials` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `update_date` timestamp NOT NULL,
+  `translation_id` int(11) NOT NULL,
+  `quality` varchar(255) NOT NULL,
+  `season` int(11) NOT NULL,
+  `episode` int(11) NOT NULL,
+  PRIMARY KEY (id),
+  KEY `post_id` (`post_id`),
+  KEY `token` (`token`),
+  KEY `season` (`season`)
+) ENGINE={engine} DEFAULT CHARACTER SET {charset} COLLATE {charset}_general_ci;
+
+CREATE TABLE `{prefix}_cdnhub_update_vote` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vote_mark` int(11) NOT NULL,
+  `session_id` varchar(255) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE={engine} DEFAULT CHARACTER SET {charset} COLLATE {charset}_general_ci;
+INSERT INTO `{prefix}_cdnhub_update_vote` (`id`, `vote_mark`, `session_id`) VALUES (1, 0, '');]]></mysqlinstall>
+	<mysqlupgrade><![CDATA[]]></mysqlupgrade>
+	<mysqlenable><![CDATA[]]></mysqlenable>
+	<mysqldisable><![CDATA[]]></mysqldisable>
+	<mysqldelete><![CDATA[DELETE FROM {prefix}_admin_sections WHERE `name` = 'cdnhub';
+DROP TABLE IF EXISTS `{prefix}_cdnhub_update`;
+DROP TABLE IF EXISTS `{prefix}_cdnhub_update_log`;
+DROP TABLE IF EXISTS `{prefix}_cdnhub_update_serials`;
+DROP TABLE IF EXISTS `{prefix}_cdnhub_update_vote`;]]></mysqldelete>
+	<phpinstall><![CDATA[]]></phpinstall>
+	<phpupgrade><![CDATA[]]></phpupgrade>
+	<phpenable><![CDATA[]]></phpenable>
+	<phpdisable><![CDATA[$cdnhub_config = require_once ROOT_DIR . '/cdnhub/config.php';
+
+if (isset($cdnhub_config['on']))
+	unset($cdnhub_config['on']);
+
+$fh = fopen(ROOT_DIR . '/cdnhub/config.php', 'w');
+fwrite($fh, '<?php' . "\r\n\r\nreturn " . var_export($cdnhub_config, true) . ';');
+fclose($fh);]]></phpdisable>
+	<phpdelete><![CDATA[]]></phpdelete>
+	<notice><![CDATA[]]></notice>
+	<file name="engine/init.php">
+		<operation action="after">
+			<searchcode><![CDATA[require_once (DLEPlugins::Check(ENGINE_DIR . '/modules/functions.php'));]]></searchcode>
+			<replacecode><![CDATA[require_once ROOT_DIR . '/cdnhub/init.php';]]></replacecode>
+		</operation>
+	</file>
+	<file name="engine/modules/show.full.php">
+		<operation action="after">
+			<searchcode><![CDATA[else $tpl->load_template( 'fullstory.tpl' );]]></searchcode>
+			<replacecode><![CDATA[$cdnhub->view(array('player'));]]></replacecode>
+		</operation>
+	</file>
+	<file name="engine/inc/addnews.php">
+		<operation action="after">
+			<searchcode><![CDATA[// End XFields Call]]></searchcode>
+			<replacecode><![CDATA[require_once ROOT_DIR . '/cdnhub/admin/widgets/search.php';]]></replacecode>
+		</operation>
+	</file>
+	<file name="engine/inc/editnews.php">
+		<operation action="after">
+			<searchcode><![CDATA[// End XFields Call]]></searchcode>
+			<replacecode><![CDATA[require_once ROOT_DIR . '/cdnhub/admin/widgets/search.php';]]></replacecode>
+		</operation>
+	</file>
+	<file name="engine/modules/main.php">
+		<operation action="before">
+			<searchcode><![CDATA[$tpl->compile ( 'main' );]]></searchcode>
+			<replacecode><![CDATA[$cdnhub->view(array('script'));]]></replacecode>
+		</operation>
+		<operation action="before">
+			<searchcode><![CDATA[GzipOut();]]></searchcode>
+			<replacecode><![CDATA[if (!intval($cdnhub->config['update']['type'])) { $cdnhub->update(); }]]></replacecode>
+		</operation>
+	</file>
+</dleplugin>

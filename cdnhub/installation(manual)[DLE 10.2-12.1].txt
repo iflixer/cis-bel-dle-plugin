@@ -1,0 +1,90 @@
+Ручная установка модуля:
+
+1. Залить все файлы из папки upload в корень сайта
+
+2. Перейти по ссылке http://ваш-сайт.ру/cdnhub_installation.php (после удалить этот файл)
+
+3. Открыть файл engine/init.php
+
+	найти этот код:
+
+		require_once (DLEPlugins::Check(ENGINE_DIR . '/modules/functions.php'));
+
+	после него вставить этот код:
+
+		// CDNHub init -> Begin
+
+		require_once ROOT_DIR . '/cdnhub/init.php';
+
+		// CDNHub Init -> End
+
+4. Открыть файл engine/modules/show.full.php
+
+	найти этот код:
+
+		else $tpl->load_template( 'fullstory.tpl' );
+
+	после него вставить этот код:
+
+		// CDNHub View -> Begin
+
+		$cdnhub->view(array('player'));
+
+		// CDNHub View -> End
+
+5. Открыть файл engine/inc/addnews.php
+
+	найти этот код:
+
+		// End XFields Call
+
+	после него вставить этот код:
+
+		// CDNHub Search -> Begin
+
+		require_once ROOT_DIR . '/cdnhub/admin/widgets/search.php';
+
+		// CDNHub Search -> End
+
+6. Открыть файл engine/inc/editnews.php
+
+	найти этот код:
+
+		// End XFields Call
+
+	после него вставить этот код:
+
+		// CDNHub Search -> Begin
+
+		require_once ROOT_DIR . '/cdnhub/admin/widgets/search.php';
+
+		// CDNHub Search -> End
+
+7. Открыть файл engine/modules/main.php
+
+	находим следующий код:
+
+        $tpl->compile ( 'main' );
+
+    перед ним вставляем этот код:
+
+        // CDNHub Script -> Begin
+
+        $cdnhub->view(array('script'));
+
+        // CDNHub Script -> End
+
+	далее найти этот код:
+
+		GzipOut();
+
+	перед ним вставить этот код:
+
+		// CDNHub Update -> Begin
+
+		if (!intval($cdnhub->config['update']['type']))
+			$cdnhub->update();
+
+		// CDNHub Update -> End
+
+8. Готово

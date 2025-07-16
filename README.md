@@ -1,0 +1,1 @@
+* Plugin for DLE to work with cdnhub
