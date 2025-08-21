@@ -34,7 +34,7 @@ $write = array(
 	'description' => $cdnhub->config['xfields']['write']['description'] ? "#xf_{$cdnhub->config['xfields']['write']['description']}" : '',
 	'year' => $cdnhub->config['xfields']['write']['year'] ? "#xf_{$cdnhub->config['xfields']['write']['year']}" : '',
 	'duration' => $cdnhub->config['xfields']['write']['duration'] ? "#xf_{$cdnhub->config['xfields']['write']['duration']}" : '',
-	'genres' => $cdnhub->config['xfields']['write']['genres'] ? "#xf_{$cdnhub->config['xfields']['write']['genres']}" : '',
+	'genres' => $cdnhub->config['xfields']['write']['genres'] == 'category' ? 'select[name="category[]"]' : ($cdnhub->config['xfields']['write']['genres'] ? "#xf_{$cdnhub->config['xfields']['write']['genres']}" : ''),
 	'countries' => $cdnhub->config['xfields']['write']['countries'] ? "#xf_{$cdnhub->config['xfields']['write']['countries']}" : '',
 	'age' => $cdnhub->config['xfields']['write']['age'] ? "#xf_{$cdnhub->config['xfields']['write']['age']}" : '',
 	'poster' => $cdnhub->config['xfields']['write']['poster'] ? "#xf_{$cdnhub->config['xfields']['write']['poster']}" : '',
@@ -308,6 +308,7 @@ $output .= "<div class=\"form-group\">
 		vh.write.year = '{$write['year']}';
 		vh.write.duration = '{$write['duration']}';
 		vh.write.genres = '{$write['genres']}';
+		vh.write.genres_is_category = " . ($cdnhub->config['xfields']['write']['genres'] == 'category' ? 'true' : 'false') . ";
 		vh.write.countries = '{$write['countries']}';
 		vh.write.age = '{$write['age']}';
 		vh.write.poster = '{$write['poster']}';

@@ -71,6 +71,27 @@ switch ($action) {
 
 		break;
 
+	case 'genres_to_categories':
+		if (isset($_POST['genres']) && $_POST['genres']) {
+			$cdnhubUpdate = new CDNHubUpdate($cdnhub->config);
+			$result = $cdnhubUpdate->genresToCategoryIdsWithNames($_POST['genres']);
+			
+			echo json_encode([
+				'success' => true,
+				'category_ids' => $result['ids'],
+				'category_data' => $result['data']
+			]);
+		} else {
+			echo json_encode([
+				'success' => false,
+				'error' => 'No genres provided'
+			]);
+		}
+
+		exit;
+
+		break;
+
 	// Index
 
 	default:

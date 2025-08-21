@@ -548,8 +548,13 @@ class CDNHubUpdate
 		if ($this->config['xfields']['write']['duration'] && $insert_data['duration'])
 			$news->data['xfields'][$this->config['xfields']['write']['duration']] = $insert_data['duration'];
 
-		if ($this->config['xfields']['write']['genres'] && $insert_data['genres'])
-			$news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $insert_data['genres']);
+		if ($this->config['xfields']['write']['genres'] && $insert_data['genres']) {
+			if ($this->config['xfields']['write']['genres'] == 'category') {
+				$news->data['category'] = $this->genresToCategoryIds(implode(', ', $insert_data['genres']));
+			} else {
+				$news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $insert_data['genres']);
+			}
+		}
 
 		if ($this->config['xfields']['write']['countries'] && $insert_data['countries'])
 			$news->data['xfields'][$this->config['xfields']['write']['countries']] = implode(', ', $insert_data['countries']);
@@ -1053,8 +1058,13 @@ class CDNHubUpdate
         if ($this->config['xfields']['write']['duration'] && $insert_data['duration'])
             $news->data['xfields'][$this->config['xfields']['write']['duration']] = $insert_data['duration'];
 
-        if ($this->config['xfields']['write']['genres'] && $insert_data['genres'])
-            $news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $insert_data['genres']);
+        if ($this->config['xfields']['write']['genres'] && $insert_data['genres']) {
+            if ($this->config['xfields']['write']['genres'] == 'category') {
+                $news->data['category'] = $this->genresToCategoryIds(implode(', ', $insert_data['genres']));
+            } else {
+                $news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $insert_data['genres']);
+            }
+        }
 
         if ($this->config['xfields']['write']['countries'] && $insert_data['countries'])
             $news->data['xfields'][$this->config['xfields']['write']['countries']] = implode(', ', $insert_data['countries']);
@@ -1378,6 +1388,170 @@ class CDNHubUpdate
 		}
 
 		return $new_source;
+
+	}
+
+	public function genresToCategoryIds($genres_string)
+	{
+		
+		global $db;
+
+		if (!$genres_string) {
+			return '';
+		}
+
+		$genres = array_map('trim', explode(',', $genres_string));
+		$category_ids = [];
+
+		foreach ($genres as $genre) {
+			if (!$genre) continue;
+
+			$safe_genre = $db->safesql($genre);
+			$result = $db->query("SELECT id FROM " . PREFIX . "_category WHERE name = '{$safe_genre}' LIMIT 1");
+
+			if ($db->num_rows($result)) {
+				$row = $db->get_row($result);
+				$category_ids[] = $row['id'];
+			} else {
+				$new_category_id = $this->createCategory($genre);
+				if ($new_category_id) {
+					$category_ids[] = $new_category_id;
+				}
+			}
+		}
+
+		return implode(',', $category_ids);
+
+	}
+
+	public function genresToCategoryIdsWithNames($genres_string)
+	{
+		
+		global $db;
+
+		if (!$genres_string) {
+			return ['ids' => '', 'data' => []];
+		}
+
+		$genres = array_map('trim', explode(',', $genres_string));
+		$category_ids = [];
+		$category_data = [];
+
+		foreach ($genres as $genre) {
+			if (!$genre) continue;
+
+			$safe_genre = $db->safesql($genre);
+			$result = $db->query("SELECT id, name FROM " . PREFIX . "_category WHERE name = '{$safe_genre}' LIMIT 1");
+
+			if ($db->num_rows($result)) {
+				$row = $db->get_row($result);
+				$category_ids[] = $row['id'];
+				$category_data[] = ['id' => $row['id'], 'name' => $row['name']];
+			} else {
+				$new_category_id = $this->createCategory($genre);
+				if ($new_category_id) {
+					$category_ids[] = $new_category_id;
+					$category_data[] = ['id' => $new_category_id, 'name' => $genre];
+				}
+			}
+		}
+
+		return [
+			'ids' => implode(',', $category_ids),
+			'data' => $category_data
+		];
+
+	}
+
+	protected function createCategory($genre_name)
+	{
+		global $db;
+
+		if (!$genre_name) return false;
+
+		$alt_name = $this->generateAltName($genre_name);
+
+		$safe_name = $db->safesql($genre_name);
+		$safe_alt_name = $db->safesql($alt_name);
+
+		$db->query("INSERT INTO " . PREFIX . "_category SET 
+			parentid = 0,
+			posi = 1,
+			name = '{$safe_name}',
+			alt_name = '{$safe_alt_name}',
+			icon = '',
+			skin = '',
+			descr = '',
+			keywords = '',
+			news_sort = 'date',
+			news_msort = 'DESC',
+			news_number = 0,
+			short_tpl = '',
+			full_tpl = '',
+			metatitle = '',
+			show_sub = 0,
+			allow_rss = 1,
+			fulldescr = '',
+			disable_search = 0,
+			disable_main = 0,
+			disable_rating = 0,
+			disable_comments = 0,
+			enable_dzen = 1,
+			active = 1,
+			rating_type = -1,
+			schema_org = '1',
+			disable_index = 0
+		");
+
+		$category_id = $db->insert_id();
+
+		if ($category_id) {
+			@unlink(ENGINE_DIR . "/cache/system/category.json");
+			clear_cache();
+		}
+
+		return $category_id;
+
+	}
+
+	protected function generateAltName($name)
+	{
+		global $db;
+		$alt_name = strtolower($name);
+
+		$translit = [
+			'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd',
+			'е' => 'e', 'ё' => 'e', 'ж' => 'zh', 'з' => 'z', 'и' => 'i',
+			'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n',
+			'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't',
+			'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c', 'ч' => 'ch',
+			'ш' => 'sh', 'щ' => 'sch', 'ъ' => '', 'ы' => 'y', 'ь' => '',
+			'э' => 'e', 'ю' => 'yu', 'я' => 'ya'
+		];
+		
+		$alt_name = strtr($alt_name, $translit);
+		$alt_name = preg_replace('/[^a-z0-9]+/', '-', $alt_name);
+		$alt_name = trim($alt_name, '-');
+		if (!$alt_name) {
+			$alt_name = 'category-' . time();
+		}
+
+		$original_alt_name = $alt_name;
+		$counter = 1;
+		
+		while (true) {
+			$safe_alt_name = $db->safesql($alt_name);
+			$result = $db->query("SELECT id FROM " . PREFIX . "_category WHERE alt_name = '{$safe_alt_name}' LIMIT 1");
+			
+			if (!$db->num_rows($result)) {
+				break;
+			}
+			
+			$alt_name = $original_alt_name . '-' . $counter;
+			$counter++;
+		}
+		
+		return $alt_name;
 
 	}
 

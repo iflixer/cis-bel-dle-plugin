@@ -128,6 +128,9 @@ if ($xfieldsload)
 			$xfields[$value[0]] = $value[1];
 	}
 
+$xfields_with_category = $xfields;
+$xfields_with_category['category'] = 'Post category';
+
 // Not Update Xfields
 
 $not_update_xfields = array('' => '');
@@ -685,10 +688,10 @@ include dirname(__FILE__) . '/header.php';
 							CDNHubForm::select(
 								'moduleXfieldsWriteGenres',
 								'settings[xfields][write][genres]',
-								$xfields,
+								$xfields_with_category,
 								$cdnhub->config['xfields']['write']['genres']
 							),
-							'Доп. поле для заполнения списка Жанров фильма или сериала'
+							'Доп. поле для заполнения списка Жанров фильма или сериала (можно выбрать "Категория новости" для прямого присвоения категорий)'
 						); ?>
 
 						<?php echo CDNHubForm::group(

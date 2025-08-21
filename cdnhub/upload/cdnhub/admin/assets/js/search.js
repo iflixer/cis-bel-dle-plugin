@@ -367,8 +367,13 @@ $('#vhSearch').click(function() {
 				
 				if (vh.write.genres) {
 					var genres = vhWriteTarget.attr('genres');
-					if (genres)
-						vh_write(vh.write.genres, genres);
+					if (genres) {
+						if (vh.write.genres_is_category) {
+							vh_write_category(genres);
+						} else {
+							vh_write(vh.write.genres, genres);
+						}
+					}
 				}
 
 				// countries
@@ -515,6 +520,51 @@ function vh_write(field, value) {
 		if (field && tinymce.get(_field))
 			tinymce.get(_field).setContent(value);
 	}
+
+}
+
+function vh_write_category(genres_string) {
+	
+	if (!genres_string) return;
+
+	$.ajax({
+		url: vhBaseUrl + '&action=genres_to_categories',
+		type: 'POST',
+		data: { genres: genres_string },
+		dataType: 'json',
+		success: function(response) {
+			if (response.success && response.category_data) {
+				$('select[name="category[]"] option').prop('selected', false);
+				
+				var categorySelect = $('select[name="category[]"]');
+				
+				for (var i = 0; i < response.category_data.length; i++) {
+					var category = response.category_data[i];
+					var categoryId = category.id;
+					var categoryName = category.name;
+					var existingOption = categorySelect.find('option[value="' + categoryId + '"]');
+					
+					if (existingOption.length === 0) {
+						var newOption = $('<option></option>')
+							.attr('value', categoryId)
+							.text(categoryName);
+						categorySelect.append(newOption);
+					}
+
+					categorySelect.find('option[value="' + categoryId + '"]').prop('selected', true);
+				}
+				
+				categorySelect.trigger('change');
+				
+				if (categorySelect.hasClass('categoryselect')) {
+					categorySelect.trigger('chosen:updated');
+				}
+			}
+		},
+		error: function() {
+			console.log('Error converting genres to categories');
+		}
+	});
 
 }
 
