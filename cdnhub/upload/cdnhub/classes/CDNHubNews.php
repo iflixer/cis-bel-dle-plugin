@@ -81,7 +81,7 @@ class CDNHubNews
 
 			$this->data['category'] = '';
 			$this->data['date'] = date('Y-m-d H:i:s', time());
-			$this->data['approve'] = 0;
+			$this->data['approve'] = $this->config['publish_immediately'] ? 1 : 0;
 
 			$this->data['xfields'] = $this->xfields->toString($this->data['xfields']);
 

@@ -1029,6 +1029,18 @@ include dirname(__FILE__) . '/header.php';
 						); ?>
 
 					</div>
+                    <div class="row">
+                        <?php echo CDNHubForm::group(
+                                'publishImmediately',
+                                'Публиковать посты без модерации',
+                                CDNHubForm::_switch(
+                                        'publishImmediately',
+                                        'settings[publish_immediately]',
+                                        $cdnhub->config['publish_immediately'] ? true : false
+                                ),
+                                'При включении новые посты будут публиковаться сразу без модерации'
+                        ); ?>
+                    </div>
 
 					<hr class="vh-separator">
 					
