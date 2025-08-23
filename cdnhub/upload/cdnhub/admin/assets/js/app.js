@@ -55,6 +55,21 @@ $('#settingsSave').click(function() {
 
 	$('#settingsCustomTranslations').val(customTranslations);
 
+	var customGenres = new Array();
+
+	$.each($('.custom-genre'), function(key, element) {
+		var pattern = $(element).find('.custom-genre-from').val();
+		var replacement = $(element).find('.custom-genre-to').val();
+
+		if (pattern)
+			customGenres.push(pattern + '|' + replacement);
+
+	});
+
+	customGenres = customGenres.join('\r\n');
+
+	$('#settingsCustomGenres').val(customGenres);
+
 	// Priority
 
 	var updateSerialsPriority = new Array();
@@ -184,6 +199,113 @@ $('#customTranslationList').on('click', '.custom-translation-delete', function()
 
 	element.remove();
 
+});
+
+$('input[name="settings[genres_storage]"]').on('change', function() {
+	var mode = $(this).val();
+	
+	if (mode === 'xfields') {
+		$('#genresXfieldSelection').show();
+	} else {
+		$('#genresXfieldSelection').hide();
+	}
+	
+	if (typeof currentStorageMode !== 'undefined') {
+		currentStorageMode = mode;
+	}
+	
+	if ($('.custom-genre').length > 0) {
+		$('#customGenresList .custom-genre').each(function() {
+			var $row = $(this);
+			var toValue = $row.find('.custom-genre-to').val();
+			var $newToSelect = createCategoryDropdown(toValue);
+			$row.find('.custom-genre-to').replaceWith($newToSelect);
+		});
+	}
+});
+
+$('#customGenresModal').on('show.bs.modal', function() {
+	updateExistingGenreRows();
+});
+
+function createGenreDropdown(selectedValue) {
+	var select = $('<select class="form-control custom-genre-from"><option value="">Выберите жанр из API</option></select>');
+	
+	if (typeof genresData !== 'undefined' && genresData && genresData.length > 0) {
+		$.each(genresData, function(index, genre) {
+			var option = $('<option></option>').attr('value', genre.value).text(genre.text);
+			if (genre.value === selectedValue) {
+				option.prop('selected', true);
+			}
+			select.append(option);
+		});
+	}
+	
+	return select;
+}
+
+function createCategoryDropdown(selectedValue) {
+	var select = $('<select class="form-control custom-genre-to"></select>');
+	
+	if (typeof currentStorageMode !== 'undefined' && currentStorageMode === 'categories') {
+		select.append('<option value="">Выберите категорию DLE</option>');
+		if (typeof categoriesData !== 'undefined' && categoriesData && categoriesData.length > 0) {
+			$.each(categoriesData, function(index, category) {
+				var option = $('<option></option>').attr('value', category.value).text(category.text);
+				if (category.value == selectedValue) {
+					option.prop('selected', true);
+				}
+				select.append(option);
+			});
+		}
+	} else {
+		select = $('<input type="text" class="form-control custom-genre-to" placeholder="Название для замены" value="' + (selectedValue || '') + '">');
+	}
+	
+	return select;
+}
+
+function updateExistingGenreRows() {
+	var existingMappings = [];
+	$('#customGenresList .custom-genre').each(function() {
+		var $row = $(this);
+		var fromValue = $row.find('.custom-genre-from').val();
+		var toValue = $row.find('.custom-genre-to').val();
+		
+		if (fromValue) {
+			existingMappings.push({from: fromValue, to: toValue});
+		}
+	});
+	
+	$('#customGenresList').empty();
+	
+	$.each(existingMappings, function(index, mapping) {
+		var $newRow = $('<div class="row mb-2 custom-genre"></div>');
+		var $genreCol = $('<div class="col-md-5"></div>').append(createGenreDropdown(mapping.from));
+		var $categoryCol = $('<div class="col-md-5"></div>').append(createCategoryDropdown(mapping.to));
+		var $deleteCol = $('<div class="col-md-2"></div>').append(
+			'<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Удалить соответствие"><i class="fas fa-trash"></i></button>'
+		);
+		
+		$newRow.append($genreCol).append($categoryCol).append($deleteCol);
+		$('#customGenresList').append($newRow);
+	});
+}
+
+$('body').on('click', '.custom-genre-duplicate', function() {
+	var $newRow = $('<div class="row mb-2 custom-genre"></div>');
+	var $genreCol = $('<div class="col-md-5"></div>').append(createGenreDropdown(''));
+	var $categoryCol = $('<div class="col-md-5"></div>').append(createCategoryDropdown(''));
+	var $deleteCol = $('<div class="col-md-2"></div>').append(
+		'<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Удалить соответствие"><i class="fas fa-trash"></i></button>'
+	);
+	
+	$newRow.append($genreCol).append($categoryCol).append($deleteCol);
+	$('#customGenresList').append($newRow);
+});
+
+$('#customGenresList').on('click', '.custom-genre-delete', function() {
+	$(this).closest('.custom-genre').remove();
 });
 
 // Settings -> Priority

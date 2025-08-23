@@ -34,7 +34,7 @@ $write = array(
 	'description' => $cdnhub->config['xfields']['write']['description'] ? "#xf_{$cdnhub->config['xfields']['write']['description']}" : '',
 	'year' => $cdnhub->config['xfields']['write']['year'] ? "#xf_{$cdnhub->config['xfields']['write']['year']}" : '',
 	'duration' => $cdnhub->config['xfields']['write']['duration'] ? "#xf_{$cdnhub->config['xfields']['write']['duration']}" : '',
-	'genres' => $cdnhub->config['xfields']['write']['genres'] ? "#xf_{$cdnhub->config['xfields']['write']['genres']}" : '',
+	'genres' => ($cdnhub->config['genres_storage'] === 'categories') ? 'select[name="category[]"]' : (($cdnhub->config['xfields']['write']['genres_custom']) ? "#xf_{$cdnhub->config['xfields']['write']['genres_custom']}" : ''),
 	'countries' => $cdnhub->config['xfields']['write']['countries'] ? "#xf_{$cdnhub->config['xfields']['write']['countries']}" : '',
 	'age' => $cdnhub->config['xfields']['write']['age'] ? "#xf_{$cdnhub->config['xfields']['write']['age']}" : '',
 	'poster' => $cdnhub->config['xfields']['write']['poster'] ? "#xf_{$cdnhub->config['xfields']['write']['poster']}" : '',
@@ -318,6 +318,22 @@ $output .= "<div class=\"form-group\">
 		vh.seo.title = '{$seo['title']}';
 		vh.seo.meta_title = '{$seo['meta_title']}';
 		vh.seo.meta_description = '{$seo['meta_description']}';
+
+		vh.mapping = {};
+		vh.mapping.storage_mode = '{$cdnhub->config['genres_storage']}';
+		vh.mapping.genres_mappings = {};
+		
+		if (vh.mapping.storage_mode === 'categories') {
+			$.ajax({
+				url: vhBaseUrl + '&action=load_mapping_data',
+				dataType: 'json',
+				cache: false,
+				async: false,
+				success: function(data) {
+					vh.mapping.genres_mappings = data.genres_mappings || {};
+				}
+			});
+		}
 
 	//-->
 </script>

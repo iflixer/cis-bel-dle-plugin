@@ -59,16 +59,47 @@ if (isset($_POST['settings'])) {
 	} else
 		$cdnhub->config['custom']['translations'] = array();
 
+	if ($cdnhub->config['custom']['genres']) {
+
+		$custom_genres = array();
+
+		$data = explode("\r\n", $cdnhub->config['custom']['genres']);
+
+		if ($data) foreach ($data as $string) {
+			$parts = explode('|', $string);
+			
+			if (count($parts) >= 2 && $parts[0]) {
+				$genre = trim($parts[0]);
+				$category = trim($parts[1]);
+				
+				if ($cdnhub->config['genres_storage'] === 'categories') {
+					$custom_genres[$genre] = intval($category);
+				} else {
+					$custom_genres[$genre] = $category;
+				}
+			}
+		}
+
+		$cdnhub->config['custom']['genres'] = $custom_genres;
+
+	} else
+		$cdnhub->config['custom']['genres'] = array();
+
 	// Translations
 
 	$cdnhubApi = new CDNHubApi($cdnhub->config['api']);
 
 	$translations = $cdnhubApi->getTranslations();
 
+	$genresApi = $cdnhubApi->getGenres();
+
 	// Save
 
 	if ($translations)
 		$cdnhub->config['translations'] = $translations;
+
+	if ($genresApi)
+		$cdnhub->config['genres'] = $genresApi;
 
 	if ($cronkey)
 		$cdnhub->config['cronkey'] = $cronkey;
@@ -169,6 +200,47 @@ $translations = array();
 
 if ($cdnhub->config['translations']) foreach ($cdnhub->config['translations'] as $translation)
 	$translations[] = $translation;
+
+$genres = array();
+
+if ($cdnhub->config['genres']) {
+	foreach ($cdnhub->config['genres'] as $genre) {
+		if (is_array($genre) && isset($genre['name'])) {
+			$genres[] = array(
+				'value' => $genre['name'],
+				'text' => $genre['name'],
+				'id' => $genre['id'] ?? null
+			);
+		} else {
+			$genres[] = array(
+				'value' => $genre,
+				'text' => $genre,
+				'id' => null
+			);
+		}
+	}
+	
+	usort($genres, function($a, $b) {
+		return strcmp($a['text'], $b['text']);
+	});
+}
+
+$categories = array();
+
+global $cat_info;
+
+if (!empty($cat_info) && is_array($cat_info)) {
+	foreach ($cat_info as $cat_id => $cat_data) {
+		$categories[] = array(
+			'value' => $cat_id,
+			'text' => $cat_data['name']
+		);
+	}
+	
+	usort($categories, function($a, $b) {
+		return strcmp($a['text'], $b['text']);
+	});
+}
 
 // Settings
 
@@ -488,6 +560,56 @@ include dirname(__FILE__) . '/header.php';
 								$cdnhub->config['xfields']['write']['custom_quality']
 							),
 							'Доп. поле для заполнения качества видео с заменой названий'
+						); ?>
+
+					</div>
+
+					<hr class="vh-separator">
+
+					<h4 class="card-header sub-card-header mb-3">Настройки жанров</h4>
+					
+					<div class="row">
+
+						<?php echo CDNHubForm::group(
+							'genresStorageMode',
+							'Способ хранения жанров',
+							CDNHubForm::radio(
+								'genresStorageModeXfields',
+								'settings[genres_storage]',
+								'В доп. поля (как текст)',
+								'xfields',
+								$cdnhub->config['genres_storage'] ?? 'xfields'
+							) . '<div class="text-muted mb-2">Жанры будут сохраняться как текст в указанное дополнительное поле</div>' . CDNHubForm::radio(
+								'genresStorageModeCategories',
+								'settings[genres_storage]',
+								'В категории DLE',
+								'categories',
+								$cdnhub->config['genres_storage'] ?? 'xfields'
+							) . '<div class="text-muted mb-2">Жанры будут привязываться к существующим категориям DLE</div>',
+							'Выберите способ хранения жанров в системе'
+						); ?>
+
+						<div class="col-12" id="genresXfieldSelection" style="display: <?php echo ($cdnhub->config['genres_storage'] ?? 'xfields') === 'xfields' ? 'block' : 'none'; ?>;">
+							<?php echo CDNHubForm::group(
+								'moduleXfieldsWriteGenresCustom',
+								'Доп. поле для жанров',
+								CDNHubForm::select(
+									'moduleXfieldsWriteGenresCustom',
+									'settings[xfields][write][genres_custom]',
+									$xfields,
+									$cdnhub->config['xfields']['write']['genres_custom'] ?? ''
+								),
+								'Доп. поле для сохранения жанров (при выборе режима "В доп. поля")'
+							); ?>
+						</div>
+
+						<?php echo CDNHubForm::group(
+							'moduleXfieldsWriteCustomGenresSet',
+							'Маппинг жанров',
+							'<div>
+								<button id="customGenresButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customGenresModal">Настроить соответствие жанров</button>
+							</div>',
+							'Настройки соответствия жанров из API к категориям или названиям'
 						); ?>
 
 					</div>
@@ -1192,6 +1314,7 @@ include dirname(__FILE__) . '/header.php';
 
 	<textarea name="settings[custom][qualities]" id="settingsCustomQualities" style="display: none"></textarea>
 	<textarea name="settings[custom][translations]" id="settingsCustomTranslations" style="display: none"></textarea>
+	<textarea name="settings[custom][genres]" id="settingsCustomGenres" style="display: none"></textarea>
 
 	<textarea name="settings[update][serials][priority]" id="settingsUpdateSerialsPriority" style="display: none"></textarea>
 
@@ -1268,6 +1391,62 @@ include dirname(__FILE__) . '/header.php';
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="customGenresModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="customGenresModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="customGenresModalLabel">Соответствие жанров</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true"></span>
+		        </button>
+			</div>
+			<div class="modal-body" style="padding-top:0">
+				
+				<div class="alert alert-warning">
+					После изменения соответствий жанров не забудьте закрыть это окно и сохранить настройки.<br>
+					<strong>Режим категорий:</strong> укажите ID существующей категории DLE<br>
+					<strong>Режим доп. полей:</strong> укажите название для замены жанра
+				</div>
+
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-md-5"><strong>Жанр из API</strong></div>
+						<div class="col-md-5"><strong>Категория/Название</strong></div>
+						<div class="col-md-2"><strong>Действие</strong></div>
+					</div>
+				</div>
+				
+				<div id="customGenresList">
+					<?php if ($cdnhub->config['custom']['genres']) foreach ($cdnhub->config['custom']['genres'] as $pattern => $replacement) { ?>
+						<div class="row mb-2 custom-genre">
+							<div class="col-md-5">
+								<input type="text" class="form-control custom-genre-from" placeholder="Жанр из API" value="<?php echo cdnhub_encode($pattern); ?>">
+							</div>
+							<div class="col-md-5">
+								<input type="text" class="form-control custom-genre-to" placeholder="ID категории или название" value="<?php echo cdnhub_encode($replacement); ?>">
+							</div>
+							<div class="col-md-2">
+								<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Удалить соответствие"><i class="fas fa-trash"></i></button>
+							</div>
+						</div>
+					<?php } ?>
+				</div>
+
+				<button type="button" class="btn btn-success custom-genre-duplicate" title="Добавить соответствие">
+					Добавить соответствие
+				</button>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var genresData = <?php echo json_encode($genres); ?>;
+var categoriesData = <?php echo json_encode($categories); ?>;
+var currentStorageMode = '<?php echo $cdnhub->config['genres_storage'] ?? 'xfields'; ?>';
+</script>
 
 <?php if (false) { ?>
 

@@ -382,8 +382,15 @@ class CDNHubReplacement
 		if ($_POST['replacement']['xfields']['duration'] && $this->config['xfields']['write']['duration'] && $update_data['duration'] && $update_data['duration'] != $post_data['duration'])
 			$news->data['xfields'][$this->config['xfields']['write']['duration']] = $update_data['duration'];
 
-		if ($_POST['replacement']['xfields']['genres'] && $this->config['xfields']['write']['genres'] && $update_data['genres'] && $update_data['genres'] != $post_data['genres'])
-			$news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $update_data['genres']);
+		if ($_POST['replacement']['xfields']['genres'] && $update_data['genres'] && $update_data['genres'] != $post_data['genres']) {
+			$processedGenres = $update->processGenres($update_data['genres']);
+			
+			if ($this->config['genres_storage'] === 'categories' && $processedGenres) {
+				$news->data['category'] = $processedGenres;
+			} elseif ($this->config['genres_storage'] === 'xfields' && $this->config['xfields']['write']['genres_custom'] && $processedGenres) {
+				$news->data['xfields'][$this->config['xfields']['write']['genres_custom']] = $processedGenres;
+			}
+		}
 
 		if ($_POST['replacement']['xfields']['countries'] && $this->config['xfields']['write']['countries'] && $update_data['countries'] && $update_data['countries'] != $post_data['countries'])
 			$news->data['xfields'][$this->config['xfields']['write']['countries']] = implode(', ', $update_data['countries']);
