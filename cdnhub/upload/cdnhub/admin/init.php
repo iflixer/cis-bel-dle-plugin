@@ -71,6 +71,12 @@ switch ($action) {
 
 		break;
 
+	case 'load_mapping_data':
+
+		require_once $actionDir . '/load_mapping_data.php';
+
+		break;
+
 	// Index
 
 	default:

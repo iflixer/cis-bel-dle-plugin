@@ -25,12 +25,21 @@ class CDNHubApi
 	{
 		
 		$data = $this->get("{$this->config['domain']}translations?token={$this->config['token']}");
-
 		if ($data['result'])
 			return $data['result'];
 		else
 			return false;
 
+	}
+
+	public function getGenres()
+	{
+		$data = $this->get("{$this->config['domain']}genres?token={$this->config['token']}");
+
+		if ($data['result'])
+			return $data['result'];
+		else
+			return [];
 	}
 
 	// Updates

@@ -112,7 +112,7 @@ foreach ($cdnhubSearch as $data) {
 	else
 		$search_data['duration'] = '';
 
-	if ($cdnhub->config['xfields']['write']['genres'] && $data['genres'])
+	if (($cdnhub->config['genres_storage'] === 'categories' || $cdnhub->config['xfields']['write']['genres']) && $data['genres'])
 		$search_data['genres'] = implode(', ', $data['genres']);
 	else
 		$search_data['genres'] = '';

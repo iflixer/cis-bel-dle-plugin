@@ -367,8 +367,11 @@ $('#vhSearch').click(function() {
 				
 				if (vh.write.genres) {
 					var genres = vhWriteTarget.attr('genres');
-					if (genres)
-						vh_write(vh.write.genres, genres);
+					if (genres) {
+						if ((typeof vh.mapping !== 'undefined' && vh.mapping.storage_mode === 'categories') || $('#xfieldGenres').is(':checked')) {
+							vh_write(vh.write.genres, genres);
+						}
+					}
 				}
 
 				// countries
@@ -486,6 +489,10 @@ function vh_write(field, value) {
 		return false;
 	}
 
+	if (field === 'select[name="category[]"]' && typeof vh.mapping !== 'undefined' && vh.mapping.storage_mode === 'categories') {
+		return vh_write_genres_to_categories(value);
+	}
+
 	var element = $(field);
 
 	element.val(value);
@@ -535,3 +542,46 @@ $("input.form-check-input").click(function() {
 		target.prop("checked", true);
 	}
 });
+
+function vh_write_genres_to_categories(genres_string) {
+	if (typeof vh.mapping === 'undefined' || vh.mapping.storage_mode !== 'categories') {
+		return false;
+	}
+	
+	if (!genres_string || !vh.mapping.genres_mappings) {
+		return false;
+	}
+	
+	var genres = genres_string.split(', ');
+	var categoryIds = [];
+	
+	$.each(genres, function(index, genre) {
+		var trimmedGenre = genre.trim();
+		if (vh.mapping.genres_mappings[trimmedGenre]) {
+			var categoryId = vh.mapping.genres_mappings[trimmedGenre];
+			if (categoryIds.indexOf(categoryId) === -1) {
+				categoryIds.push(categoryId);
+			}
+		}
+	});
+	
+	if (categoryIds.length === 0) {
+		return false;
+	}
+
+	var categorySelect = $('select[name="category[]"]');
+
+	if (categorySelect.length) {
+		categorySelect.val([]);
+		categorySelect.val(categoryIds);
+		categorySelect.trigger('change');
+
+		if (categorySelect.hasClass('categoryselect') && categorySelect.next('.chosen-container').length) {
+			categorySelect.trigger('chosen:updated');
+		}
+		
+		return true;
+	}
+	
+	return false;
+}

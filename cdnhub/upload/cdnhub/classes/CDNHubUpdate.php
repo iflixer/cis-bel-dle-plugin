@@ -548,8 +548,15 @@ class CDNHubUpdate
 		if ($this->config['xfields']['write']['duration'] && $insert_data['duration'])
 			$news->data['xfields'][$this->config['xfields']['write']['duration']] = $insert_data['duration'];
 
-		if ($this->config['xfields']['write']['genres'] && $insert_data['genres'])
-			$news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $insert_data['genres']);
+		if ($insert_data['genres']) {
+			$processedGenres = $this->processGenres($insert_data['genres']);
+			
+			if ($this->config['genres_storage'] === 'categories' && $processedGenres) {
+				$news->data['category'] = $processedGenres;
+			} elseif ($this->config['genres_storage'] === 'xfields' && $this->config['xfields']['write']['genres_custom'] && $processedGenres) {
+				$news->data['xfields'][$this->config['xfields']['write']['genres_custom']] = $processedGenres;
+			}
+		}
 
 		if ($this->config['xfields']['write']['countries'] && $insert_data['countries'])
 			$news->data['xfields'][$this->config['xfields']['write']['countries']] = implode(', ', $insert_data['countries']);
@@ -1053,8 +1060,15 @@ class CDNHubUpdate
         if ($this->config['xfields']['write']['duration'] && $insert_data['duration'])
             $news->data['xfields'][$this->config['xfields']['write']['duration']] = $insert_data['duration'];
 
-        if ($this->config['xfields']['write']['genres'] && $insert_data['genres'])
-            $news->data['xfields'][$this->config['xfields']['write']['genres']] = implode(', ', $insert_data['genres']);
+        if ($insert_data['genres']) {
+            $processedGenres = $this->processGenres($insert_data['genres']);
+            
+            if ($this->config['genres_storage'] === 'categories' && $processedGenres) {
+                $news->data['category'] = $processedGenres;
+            } elseif ($this->config['genres_storage'] === 'xfields' && $this->config['xfields']['write']['genres_custom'] && $processedGenres) {
+                $news->data['xfields'][$this->config['xfields']['write']['genres_custom']] = $processedGenres;
+            }
+        }
 
         if ($this->config['xfields']['write']['countries'] && $insert_data['countries'])
             $news->data['xfields'][$this->config['xfields']['write']['countries']] = implode(', ', $insert_data['countries']);
@@ -1379,6 +1393,45 @@ class CDNHubUpdate
 
 		return $new_source;
 
+	}
+
+	private function isMultiCategoryEnabled()
+	{
+		if (defined('DATALIFEENGINE')) {
+			global $config;
+			return !empty($config['allow_multi_category']) && $config['allow_multi_category'] == '1';
+		}
+		return false;
+	}
+
+	public function processGenres($apiGenres)
+	{
+		if (!$apiGenres || !is_array($apiGenres)) {
+			return '';
+		}
+
+		$storageMode = $this->config['genres_storage'] ?? 'xfields';
+
+		if ($storageMode === 'categories') {
+			$categoryIds = [];
+			foreach ($apiGenres as $genre) {
+				if (isset($this->config['custom']['genres'][$genre])) {
+					$categoryIds[] = intval($this->config['custom']['genres'][$genre]);
+				}
+			}
+
+			if (!$this->isMultiCategoryEnabled() && !empty($categoryIds)) {
+				$categoryIds = [$categoryIds[0]];
+			}
+
+			return implode(',', array_unique($categoryIds));
+		} else {
+			$mappedGenres = [];
+			foreach ($apiGenres as $genre) {
+				$mappedGenres[] = $this->custom_replacement($genre, $this->config['custom']['genres']);
+			}
+			return implode(', ', $mappedGenres);
+		}
 	}
 
 }
