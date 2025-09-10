@@ -23,7 +23,7 @@ $month = array(
 $days = intval($cdnhub->config['serials']['updates']['days']) ? intval($cdnhub->config['serials']['updates']['days']) : 7;
 $limit = intval($cdnhub->config['serials']['updates']['items']) ? intval($cdnhub->config['serials']['updates']['items']) : false;
 
-$template = VH_DIR . '/widgets/updates.tpl';
+$template = CDNHUB_DIR . '/widgets/updates.tpl';
 
 if (!file_exists($template)) {
 	echo "Template not found: cdnhub/widgets/updates.tpl";
