@@ -108,7 +108,7 @@ include dirname(__FILE__) . '/header.php';
 										$exist = false;
 								}
 
-								$row = $result->fetch_assoc() ?? null;
+								$row = ($result !== null) ? $result->fetch_assoc() : null;
 
 								if ($row) {
 									if ($config['allow_alt_url']) {
