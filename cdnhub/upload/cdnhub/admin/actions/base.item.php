@@ -39,7 +39,13 @@
 	<td>
 		<?php if ($_links) { ?>
 		<div class="form-check">
-			<input type="checkbox" class="form-check-input base-insert" id="baseInsert<?php echo $i; ?>"<?php echo ($item['kinopoisk_id'] ? " data-kpid=\"{$item['kinopoisk_id']}\" name=\"base[]\" value=\"{$item['imdb_id']}\"" : ''); ?><?php echo ($item['imdb_id'] ? " data-kpid=\"{$item['imdb_id']}\" name=\"base[]\" value=\"{$item['imdb_id']}\"" : ''); ?>>
+			<?php
+				$primary_id = $item['kinopoisk_id'] ? $item['kinopoisk_id'] : $item['imdb_id'];
+				$translator_id = (!empty($item['translations']) && isset($item['translations'][0]['id'])) ? $item['translations'][0]['id'] : 0;
+				$checkbox_value = $primary_id . '-' . $translator_id;
+				$data_kpid = $item['kinopoisk_id'] ? $item['kinopoisk_id'] : $item['imdb_id'];
+			?>
+			<input type="checkbox" class="form-check-input base-insert" id="baseInsert<?php echo $i; ?>" name="base[]" value="<?php echo $checkbox_value; ?>" data-kpid="<?php echo $data_kpid; ?>">
 			<label class="form-check-label" for="baseInsert<?php echo $i; ?>"></label>
 		</div>
 		<?php } ?>
