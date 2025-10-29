@@ -300,7 +300,7 @@ class CDNHubReplacement
 					$update_data['format_season'] = $update->format_season($this->config['xfields']['write']['format_season_type'], $update_season);
 			}
 
-			if ($update_episode) {
+			if (isset($update_episode) && $update_episode !== '') {
 				$update_data['episode'] = $update_episode;
 
 				if ($this->config['xfields']['write']['format_episode'] && $this->config['xfields']['write']['format_episode_type'])
@@ -353,13 +353,13 @@ class CDNHubReplacement
 		if ($_POST['replacement']['xfields']['season'] && $this->config['xfields']['write']['season'] && $update_data['season'] && $update_data['season'] != $post_data['season'])
 			$news->data['xfields'][$this->config['xfields']['write']['season']] = $update_data['season'];
 
-		if ($_POST['replacement']['xfields']['episode'] && $this->config['xfields']['write']['episode'] && $update_data['episode'] && $update_data['episode'] != $post_data['episode'])
+		if ($_POST['replacement']['xfields']['episode'] && $this->config['xfields']['write']['episode'] && isset($update_data['episode']) && $update_data['episode'] !== '' && $update_data['episode'] != $post_data['episode'])
 			$news->data['xfields'][$this->config['xfields']['write']['episode']] = $update_data['episode'];
 
 		if ($_POST['replacement']['xfields']['format_season'] && $this->config['xfields']['write']['format_season'] && $update_data['format_season'] && $update_data['format_season'] != $post_data['format_season'])
 			$news->data['xfields'][$this->config['xfields']['write']['format_season']] = $update_data['format_season'];
 
-		if ($_POST['replacement']['xfields']['format_episode'] && $this->config['xfields']['write']['format_episode'] && $update_data['format_episode'] && $update_data['format_episode'] != $post_data['format_episode'])
+		if ($_POST['replacement']['xfields']['format_episode'] && $this->config['xfields']['write']['format_episode'] && isset($update_data['format_episode']) && $update_data['format_episode'] !== '' && $update_data['format_episode'] != $post_data['format_episode'])
 			$news->data['xfields'][$this->config['xfields']['write']['format_episode']] = $update_data['format_episode'];
 
 

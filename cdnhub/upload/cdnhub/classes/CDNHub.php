@@ -45,7 +45,6 @@ class CDNHub
 	{
 		$update = new CDNHubUpdate($this->config);
 		$update->start();
-
 	}
 
 }

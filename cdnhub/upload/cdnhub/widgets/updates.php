@@ -2,6 +2,8 @@
 
 global $config, $db, $cdnhub;
 
+
+
 if (!$cdnhub->config['serials']['updates']['on'])
 	return false;
 
@@ -99,7 +101,9 @@ if ($cache) {
 
 			$update_episode = intval($row['episode']);
 
-			$new_data[$date][$key]['episodes'][] = $update_episode;
+			if ($update_episode > 0) {
+				$new_data[$date][$key]['episodes'][] = $update_episode;
+			}
 		}
 	}
 
@@ -164,6 +168,30 @@ if ($cache) {
 
 			$_updates .= $_update_template;
 
+			$xfieldsdata = array();
+			if (count($xfields) && $row['xfields']) {
+				$xfieldsdata = xfieldsdataload($row['xfields']);
+				if ($cdnhub->config['xfields']['write']['season'] && isset($xfieldsdata[$cdnhub->config['xfields']['write']['season']])) {
+					$xfield_season = intval($xfieldsdata[$cdnhub->config['xfields']['write']['season']]);
+					if ($xfield_season > 0) {
+						$row['season'] = $xfield_season;
+					}
+				}
+
+				if ($cdnhub->config['xfields']['write']['episode'] && isset($xfieldsdata[$cdnhub->config['xfields']['write']['episode']])) {
+					$xfield_episode = $xfieldsdata[$cdnhub->config['xfields']['write']['episode']];
+					if (!empty($xfield_episode)) {
+							$episode_val = intval($xfield_episode);
+							if ($episode_val > 0) {
+								$row['episode'] = $episode_val;
+								if (!in_array($episode_val, $row['episodes'])) {
+									$row['episodes'][] = $episode_val;
+								}
+							}
+					}
+				}
+			}
+
 			// Translation
 
 			if ($row['translation_id']) {
@@ -192,6 +220,9 @@ if ($cache) {
 			// Episodes
 
 			if ($row['episodes']) {
+				$row['episodes'] = array_filter($row['episodes'], function($ep) {
+					return $ep > 0;
+				});
 				sort($row['episodes']);
 
 				if (count($row['episodes']) < 3)
@@ -377,7 +408,9 @@ if ($cache) {
 			// xfields
 
 			if (count($xfields)) {
-				$xfieldsdata = xfieldsdataload($row['xfields']);
+				if (empty($xfieldsdata) && $row['xfields']) {
+					$xfieldsdata = xfieldsdataload($row['xfields']);
+				}
 
 				foreach ($xfields as $value) {
 					$preg_safe_name = preg_quote($value[0], "'");

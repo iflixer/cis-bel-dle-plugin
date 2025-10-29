@@ -151,7 +151,7 @@ foreach ($cdnhubSearch as $data) {
 				$search_data['format_season'] = $cdnhubUpdate->format_season($cdnhub->config['xfields']['write']['format_season_type'], $update_season);
 		}
 
-		if ($update_episode) {
+		if (isset($update_episode) && $update_episode !== '') {
 			$search_data['episode'] = $update_episode;
 
 			if ($cdnhub->config['xfields']['write']['format_episode'] && $cdnhub->config['xfields']['write']['format_episode_type'])

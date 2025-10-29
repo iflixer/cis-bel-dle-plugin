@@ -95,8 +95,7 @@ class CDNHubUpdate
 				else
 					$interval = (60 * 60 * 3); // default inerval 3 hours
 
-				// $next_update = $last_update + $interval;
-				$next_update = $last_update + 1; // test
+				 $next_update = $last_update + $interval;
 
 				if ($next_update > time())
 					return false;
@@ -787,7 +786,7 @@ class CDNHubUpdate
             }
         }
 
-        if ($this->config['xfields']['write']['episode'] && $update_data['episode'] && $update_data['episode'] != $xfields[$this->config['xfields']['write']['episode']]) {
+        if ($this->config['xfields']['write']['episode'] && isset($update_data['episode']) && $update_data['episode'] !== '' && $update_data['episode'] != $xfields[$this->config['xfields']['write']['episode']]) {
             $news->data['xfields'][$this->config['xfields']['write']['episode']] = $update_data['episode'];
             
             if ($this->config['xfields']['write']['format_episode'] && $this->config['xfields']['write']['format_episode_type']) {
@@ -798,7 +797,7 @@ class CDNHubUpdate
 
         // if ($this->config['update']['serials']['up'] && intval($data['post']['approve']) && strtotime($data['post']['date']) <= time()) {
         if ($this->config['update']['serials']['up']) {
-			if ($update_data['season'] && $xfields[$this->config['xfields']['write']['season']] && $update_data['episode'] && $xfields[$this->config['xfields']['write']['episode']]) {
+			if ($update_data['season'] && $xfields[$this->config['xfields']['write']['season']] && isset($update_data['episode']) && $update_data['episode'] !== '' && $xfields[$this->config['xfields']['write']['episode']]) {
 				if ($update_data['season'] > $xfields[$this->config['xfields']['write']['season']] || ($update_data['season'] == $xfields[$this->config['xfields']['write']['season']] && intval($update_data['episode']) > intval($xfields[$this->config['xfields']['write']['episode']]))) {
 					$news->data['date'] = date('Y-m-d H:i:s', time());
 
@@ -1002,7 +1001,7 @@ class CDNHubUpdate
             }
         }
 
-        if ($this->config['xfields']['write']['episode'] && $insert_data['episode']) {
+        if ($this->config['xfields']['write']['episode'] && isset($insert_data['episode']) && $insert_data['episode'] !== '') {
             $news->data['xfields'][$this->config['xfields']['write']['episode']] = $insert_data['episode'];
 
             if ($this->config['xfields']['write']['format_episode'] && $this->config['xfields']['write']['format_episode_type']) {
@@ -1114,10 +1113,10 @@ class CDNHubUpdate
 		}
 
 		if (!$news->data['alt_name'])
-			$news->data['alt_name'] = $this->seo($insert_data, '[title_ru]{title_ru}[/title_ru]', true);
+			$news->data['alt_name'] = $this->seo($insert_data, '[title_rus]{title_rus}[/title_rus]', true);
 
 		if (!$news->data['title'])
-			$news->data['title'] = $this->seo($insert_data, '[title_ru]{title_ru}[/title_ru]');
+			$news->data['title'] = $this->seo($insert_data, '[title_rus]{title_rus}[/title_rus]');
 
 		$post_id = $news->save();
 
@@ -1417,6 +1416,21 @@ class CDNHubUpdate
 			foreach ($apiGenres as $genre) {
 				if (isset($this->config['custom']['genres'][$genre])) {
 					$categoryIds[] = intval($this->config['custom']['genres'][$genre]);
+				} else {
+					$found = false;
+					foreach ($this->config['custom']['genres'] as $configGenre => $categoryId) {
+						if (strtolower(trim($genre)) === strtolower(trim($configGenre))) {
+							$categoryIds[] = intval($categoryId);
+							$found = true;
+							break;
+						}
+					}
+					if (!$found) {
+						$replaced = $this->custom_replacement($genre, $this->config['custom']['genres']);
+						if ($replaced !== $genre && isset($this->config['custom']['genres'][$replaced])) {
+							$categoryIds[] = intval($this->config['custom']['genres'][$replaced]);
+						}
+					}
 				}
 			}
 

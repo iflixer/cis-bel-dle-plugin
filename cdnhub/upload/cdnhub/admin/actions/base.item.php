@@ -21,7 +21,7 @@
 				<?php if ($item['season']) { ?>
 					<?php echo $item['season']; ?> Сезон,
 				<?php } ?>
-				<?php if ($item['episode']) { ?>
+				<?php if (isset($item['episode']) && $item['episode'] !== '' && $item['episode'] !== null) { ?>
 					<?php echo $item['episode']; ?> Серия
 				<?php } ?>
 			</span>
