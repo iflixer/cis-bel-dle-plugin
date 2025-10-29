@@ -8,6 +8,8 @@ require_once CDNHUB_DIR . '/classes/CDNHubView.php';
 class CDNHub
 {
 
+	const VERSION = '3';
+
 	public $config;
 
 	public function __construct()
@@ -21,9 +23,16 @@ class CDNHub
 
 	public function version()
 	{
+        global $db;
+		if (isset($db)) {
+			$result = $db->super_query("SELECT version FROM dle_plugins WHERE name = 'CDNHub'");
 
-		return '3.1';
+			if ($result && isset($result['version']) && !empty($result['version'])) {
+				return $result['version'];
+			}
+		}
 
+		return self::VERSION;
 	}
 
 	// View
