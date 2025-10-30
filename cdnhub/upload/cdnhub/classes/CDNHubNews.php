@@ -79,7 +79,10 @@ class CDNHubNews
 			$this->data['short_story'] = '';
 			$this->data['full_story'] = '';
 
-			$this->data['category'] = '';
+            if (!isset($this->data['category'])) {
+                $this->data['category'] = '';
+            }
+
 			$this->data['date'] = date('Y-m-d H:i:s', time());
 			$this->data['approve'] = $this->config['publish_immediately'] ? 1 : 0;
 
