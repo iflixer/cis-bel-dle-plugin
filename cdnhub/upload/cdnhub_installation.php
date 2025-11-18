@@ -33,7 +33,7 @@ $db->query("CREATE TABLE IF NOT EXISTS `" . PREFIX . "_cdnhub_update_log` (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=" . COLLATE . ";");
 
-$db->query("INSERT INTO `" . PREFIX . "_cdnhub_update_log` (`id`, `update_id`) VALUES (1, 0), (2, 0);");
+$db->query("INSERT INTO `" . PREFIX . "_cdnhub_update_log` (`id`, `update_id`) VALUES (1, 0), (2, 0), (3, 0);");
 
 $db->query("CREATE TABLE IF NOT EXISTS `" . PREFIX . "_cdnhub_update_serials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

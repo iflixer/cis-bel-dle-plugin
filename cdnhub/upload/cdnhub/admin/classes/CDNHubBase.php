@@ -94,6 +94,8 @@ class CDNHubBase
 					$update->movie_insert($data[0]);
 				if ($data[0]['type'] == 'serial')
 					$update->serial_insert($data[0]);
+				if ($data[0]['type'] == 'cartoon')
+					$update->cartoon_insert($data[0]);
 			}
 
 		}

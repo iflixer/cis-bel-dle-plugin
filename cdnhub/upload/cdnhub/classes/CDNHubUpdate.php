@@ -34,6 +34,11 @@ class CDNHubUpdate
 		'4k'
 	);
 
+	protected $non_serial_types = array(
+		'movies' => array('db_id' => 1, 'type' => 'movie', 'config_key' => 'movies'),
+		'cartoons' => array('db_id' => 3, 'type' => 'cartoon', 'config_key' => 'cartoons')
+	);
+
 	public $added = array();
 
 	public function __construct($config)
@@ -53,7 +58,7 @@ class CDNHubUpdate
 		if (!$this->config['on'])
 			return false;
 
-		if (!$this->config['update']['movies']['on'] && !$this->config['update']['serials']['on'])
+		if (!$this->config['update']['movies']['on'] && !$this->config['update']['serials']['on'] && !$this->config['update']['cartoons']['on'])
 			return false;
 
 		$search = false;
@@ -138,6 +143,9 @@ class CDNHubUpdate
 		if ($updates['serials'])
 			$this->serials($updates['serials']);
 
+		if ($updates['cartoons'])
+			$this->cartoons($updates['cartoons']);
+
 	}
 
 	// Search
@@ -196,9 +204,7 @@ class CDNHubUpdate
 
 	}
 
-	// Movies
-
-	protected function movies($data)
+	protected function process_non_serial_content($data, $type_key)
 	{
 
 		global $db;
@@ -206,13 +212,17 @@ class CDNHubUpdate
 		if (!$data)
 			return false;
 
+		$type_config = $this->non_serial_types[$type_key];
+		$db_id = $type_config['db_id'];
+		$config_key = $type_config['config_key'];
+
 		if ($this->first) {
 			$end = end($data);
-			$db->query("UPDATE " . PREFIX . "_cdnhub_update_log SET `update_id` = " . (intval($end['update_id']) ? intval($end['update_id']) : 0) . " WHERE `id` = 1");
+			$db->query("UPDATE " . PREFIX . "_cdnhub_update_log SET `update_id` = " . (intval($end['update_id']) ? intval($end['update_id']) : 0) . " WHERE `id` = {$db_id}");
 			return false;
 		}
 
-		$row = $db->super_query("SELECT `update_id` FROM " . PREFIX . "_cdnhub_update_log WHERE `id` = 1");
+		$row = $db->super_query("SELECT `update_id` FROM " . PREFIX . "_cdnhub_update_log WHERE `id` = {$db_id}");
 		$last_update_id = $row['update_id'] ? $row['update_id'] : 0;
 
 		krsort($data);
@@ -230,21 +240,28 @@ class CDNHubUpdate
 		$updates = $this->search($need_update);
 
 		foreach ($updates as $update) {
-			if ($this->config['update']['movies']['on'] && ($update['post'] || $this->added[$update['content']['id']])) {
+			if ($this->config['update'][$config_key]['on'] && ($update['post'] || $this->added[$update['content']['id']])) {
 				if ($this->added[$update['content']['id']])
 					$update['post'] = $this->added[$update['content']['id']];
 
-				$this->movie_update($update);
+				$this->movie_update($update, $config_key);
 			} else {
-				if ($this->config['update']['movies']['add'])
-					$this->movie_insert($update);
+				if ($this->config['update'][$config_key]['add'])
+					$this->movie_insert($update, $config_key);
 			}
 
-			$db->query("UPDATE " . PREFIX . "_cdnhub_update_log SET `update_id` = " . intval($update['update_id']) . " WHERE `id` = 1");
+			$db->query("UPDATE " . PREFIX . "_cdnhub_update_log SET `update_id` = " . intval($update['update_id']) . " WHERE `id` = {$db_id}");
 		}
 
 		return true;
 
+	}
+
+	// Movies
+
+	protected function movies($data)
+	{
+		return $this->process_non_serial_content($data, 'movies');
 	}
 
 	protected function movie_update($data)
@@ -419,7 +436,7 @@ class CDNHubUpdate
 
 	}
 
-	public function movie_insert($data)
+	public function movie_insert($data, $config_key = 'movies')
 	{
 
 		$news = new CDNHubNews;
@@ -611,6 +628,193 @@ class CDNHubUpdate
 		if ($data['content']['id'])
 			$this->added[$data['content']['id']] = array_merge(['id' => $post_id], $news->data);
 
+	}
+
+	public function cartoon_insert($data)
+	{
+
+		$news = new CDNHubNews;
+
+		$news->config = $this->config;
+
+		if (!isset($data['content']))
+			$data = ['content' => $data];
+
+		$fields = array(
+
+			'content|kinopoisk_id',
+			'content|imdb_id',
+			'content|iframe_url',
+			'content|title_rus',
+			'content|title_orig',
+			'content|slogan',
+			'content|description',
+			'content|year',
+			'content|duration',
+			'content|genres',
+			'content|countries',
+			'content|age',
+			'content|poster',
+			'content|quality',
+		);
+
+		$insert_data = array();
+
+		foreach ($fields as $field) {
+			if ($data[$field]) {
+				$insert_data[$field] = $data[$field];
+			} elseif (strpos($field, '|') !== false) {
+				list($lvl1, $lvl2) = explode('|', $field);
+
+				if ($data[$lvl1][$lvl2])
+					$insert_data[$lvl2] = $data[$lvl1][$lvl2];
+			}
+		}
+
+		if ($data['content']['translations'][0]['title'])
+			$insert_data['translation'] = $data['content']['translations'][0]['title'];
+		else
+			$insert_data['translation'] = '';
+
+		if ($this->config['xfields']['write']['custom_quality'] && $insert_data['quality'])
+			$insert_data['custom_quality'] = $this->custom_replacement($insert_data['quality'], $this->config['custom']['qualities']);
+		else
+			$insert_data['custom_quality'] = '';
+
+
+		if ($this->config['xfields']['write']['translation'] && $insert_data['translation'])
+			$insert_data['custom_translation'] = $this->custom_replacement($insert_data['translation'], $this->config['custom']['translations']);
+		else
+			$insert_data['custom_translation'] = '';
+
+		if (($this->config['xfields']['write']['translations'] || $this->config['xfields']['write']['custom_translations']) && $data['content']['translations']) {
+			$_translations = [];
+			$_custom_translations = [];
+			foreach ($data['content']['translations'] as $_translation) {
+				$_translations[] = $_translation['title'];
+				$_custom_translations[] = $this->custom_replacement($_translation['title'], $this->config['custom']['translations']);
+			}
+			$insert_data['translations'] = implode(', ', $_translations);
+			$insert_data['custom_translations'] = implode(', ', $_custom_translations);
+		} else {
+			$insert_data['translations'] = '';
+			$insert_data['custom_translations'] = '';
+		}
+
+		if ($this->config['xfields']['search']['kinopoisk_id'] && $insert_data['kinopoisk_id'])
+			$news->data['xfields'][$this->config['xfields']['search']['kinopoisk_id']] = $insert_data['kinopoisk_id'];
+
+		if ($this->config['xfields']['search']['imdb_id'] && $insert_data['imdb_id'])
+			$news->data['xfields'][$this->config['xfields']['search']['imdb_id']] = $insert_data['imdb_id'];
+
+		if ($this->config['xfields']['write']['source'] && $insert_data['iframe_url'])
+			$news->data['xfields'][$this->config['xfields']['write']['source']] = $insert_data['iframe_url'];
+
+		if ($this->config['xfields']['write']['quality'] && $insert_data['quality'])
+			$news->data['xfields'][$this->config['xfields']['write']['quality']] = $insert_data['quality'];
+
+		if ($this->config['xfields']['write']['translation'] && $insert_data['translation'])
+			$news->data['xfields'][$this->config['xfields']['write']['translation']] = $insert_data['translation'];
+
+		if ($this->config['xfields']['write']['translations'] && $insert_data['translations'])
+			$news->data['xfields'][$this->config['xfields']['write']['translations']] = $insert_data['translations'];
+
+		if ($this->config['xfields']['write']['custom_quality'] && $insert_data['quality']) {
+			$news->data['xfields'][$this->config['xfields']['write']['custom_quality']] = $insert_data['custom_quality'];
+		}
+
+		if ($this->config['xfields']['write']['custom_translation'] && $insert_data['custom_translation']) {
+			$news->data['xfields'][$this->config['xfields']['write']['custom_translation']] = $insert_data['custom_translation'];
+		}
+
+		if ($this->config['xfields']['write']['custom_translations'] && $insert_data['custom_translations'])
+			$news->data['xfields'][$this->config['xfields']['write']['custom_translations']] = $insert_data['custom_translations'];
+
+		if ($this->config['xfields']['write']['title_rus'] && $insert_data['title_rus'])
+			$news->data['xfields'][$this->config['xfields']['write']['title_rus']] = $insert_data['title_rus'];
+
+		if ($this->config['xfields']['write']['title_orig'] && $insert_data['title_orig'])
+			$news->data['xfields'][$this->config['xfields']['write']['title_orig']] = $insert_data['title_orig'];
+
+		if ($this->config['xfields']['write']['slogan'] && $insert_data['slogan'])
+			$news->data['xfields'][$this->config['xfields']['write']['slogan']] = $insert_data['slogan'];
+
+		if ($this->config['xfields']['write']['description'] && $insert_data['description'])
+			$news->data['xfields'][$this->config['xfields']['write']['description']] = $insert_data['description'];
+
+		if ($this->config['xfields']['write']['year'] && $insert_data['year'])
+			$news->data['xfields'][$this->config['xfields']['write']['year']] = $insert_data['year'];
+
+		if ($this->config['xfields']['write']['duration'] && $insert_data['duration'])
+			$news->data['xfields'][$this->config['xfields']['write']['duration']] = $insert_data['duration'];
+
+		if ($insert_data['genres']) {
+			$processedGenres = $this->processGenres($insert_data['genres']);
+
+			if ($this->config['genres_storage'] === 'categories' && $processedGenres) {
+				$news->data['category'] = $processedGenres;
+			} elseif ($this->config['genres_storage'] === 'xfields' && $this->config['xfields']['write']['genres_custom'] && $processedGenres) {
+				$news->data['xfields'][$this->config['xfields']['write']['genres_custom']] = $processedGenres;
+			}
+		}
+
+		if ($this->config['xfields']['write']['countries'] && $insert_data['countries'])
+			$news->data['xfields'][$this->config['xfields']['write']['countries']] = implode(', ', $insert_data['countries']);
+
+		if ($this->config['xfields']['write']['age'] && $insert_data['age'])
+			$news->data['xfields'][$this->config['xfields']['write']['age']] = $insert_data['age'];
+
+		if ($this->config['xfields']['write']['poster'] && $insert_data['poster'])
+			$news->data['xfields'][$this->config['xfields']['write']['poster']] = $insert_data['poster'];
+
+		$insert_data['type'] = $data['content']['type'];
+
+		if ($this->config['seo']['on']) {
+			if ($this->config['seo']['url']) {
+				$seo_url = $this->seo($insert_data, $this->config['seo']['url'], true);
+
+				if ($seo_url)
+					$news->data['alt_name'] = $seo_url;
+			}
+
+			if ($this->config['seo']['title']) {
+				$seo_title = $this->seo($insert_data, $this->config['seo']['title']);
+
+				if ($seo_title)
+					$news->data['title'] = $seo_title;
+			}
+
+			if ($this->config['seo']['meta']['title']) {
+				$seo_meta_title = $this->seo($insert_data, $this->config['seo']['meta']['title']);
+
+				if ($seo_meta_title)
+					$news->data['metatitle'] = $seo_meta_title;
+			}
+
+			if ($this->config['seo']['meta']['description']) {
+				$seo_meta_description = $this->seo($insert_data, $this->config['seo']['meta']['description']);
+
+				if ($seo_meta_description)
+					$news->data['descr'] = $seo_meta_description;
+			}
+		}
+
+		if (!$news->data['alt_name'])
+			$news->data['alt_name'] = $this->seo($insert_data, '[title_rus]{title_rus}[/title_rus]', true);
+
+		if (!$news->data['title'])
+			$news->data['title'] = $this->seo($insert_data, '[title_rus]{title_rus}[/title_rus]');
+
+		$post_id = $news->save();
+
+		if ($data['content']['id'])
+			$this->added[$data['content']['id']] = array_merge(['id' => $post_id], $news->data);
+
+	}
+
+	protected function cartoons($data)
+	{
+		return $this->process_non_serial_content($data, 'cartoons');
 	}
 
 	// Serials
@@ -1158,9 +1362,15 @@ class CDNHubUpdate
 		if ($data['type'] == 'movie') {
 			$template = preg_replace("#\\[movie\\](.*?)\\[/movie\\]#i", "$1", $template);
 			$template = preg_replace('#\\[serial\\].*?\\[/serial\\]#i', '', $template);
+			$template = preg_replace('#\\[cartoon\\].*?\\[/cartoon\\]#i', '', $template);
+		} elseif ($data['type'] == 'cartoon') {
+			$template = preg_replace("#\\[cartoon\\](.*?)\\[/cartoon\\]#i", "$1", $template);
+			$template = preg_replace('#\\[movie\\].*?\\[/movie\\]#i', '', $template);
+			$template = preg_replace('#\\[serial\\].*?\\[/serial\\]#i', '', $template);
 		} else {
 			$template = preg_replace("#\\[serial\\](.*?)\\[/serial\\]#i", "$1", $template);
 			$template = preg_replace('#\\[movie\\].*?\\[/movie\\]#i', '', $template);
+			$template = preg_replace('#\\[cartoon\\].*?\\[/cartoon\\]#i', '', $template);
 		}
 
 		$fields = array(

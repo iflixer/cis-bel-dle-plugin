@@ -883,6 +883,13 @@ include dirname(__FILE__) . '/header.php';
 					<hr class="vh-separator mt-2 mb-2">
 
 					<div>
+						<strong>[cartoon] ... [/cartoon]</strong>
+						&mdash; Текст заключённый в эти теги будет использоваться только для мультфильмов
+					</div>
+
+					<hr class="vh-separator mt-2 mb-2">
+
+					<div>
 						<strong>[year]{year}[/year]</strong>
 						&mdash; Год выпуска фильма или сериала
 					</div>
@@ -1236,6 +1243,46 @@ include dirname(__FILE__) . '/header.php';
 								'settings[update][serials][add]',
 								'Добавлять новость если сериал не найден на сайте<br>(попадает на модерацию)',
 								$cdnhub->config['update']['serials']['add'] ? true : false
+							),
+							''
+						); ?>
+
+					</div>
+
+					<h4 class="card-header sub-card-header mb-3">Настройки обновления мультфильмов</h4>
+
+					<div class="row">
+
+						<?php echo CDNHubForm::group(
+							'moduleUpdateCartoonsOn',
+							'Обновление мультфильмов',
+							CDNHubForm::_switch(
+								'moduleUpdateCartoonsOn',
+								'settings[update][cartoons][on]',
+								$cdnhub->config['update']['cartoons']['on'] ? true : false
+							),
+							'Включение и выключение обновления мультфильмов'
+						); ?>
+
+					</div>
+
+					<hr class="vh-separator">
+
+					<div class="row">
+
+						<?php echo CDNHubForm::group(
+							'moduleUpdateCartoons',
+							'Дополнительные опции обновления мультфильмов',
+							CDNHubForm::checkbox(
+								'moduleUpdateCartoonsUp',
+								'settings[update][cartoons][up]',
+								'Поднимать новость при выходе лучшего качества видео',
+								$cdnhub->config['update']['cartoons']['up'] ? true : false
+							) . CDNHubForm::checkbox(
+								'moduleUpdateCartoonsAdd',
+								'settings[update][cartoons][add]',
+								'Добавлять новость если мультфильм не найден на сайте<br>(попадает на модерацию)',
+								$cdnhub->config['update']['cartoons']['add'] ? true : false
 							),
 							''
 						); ?>

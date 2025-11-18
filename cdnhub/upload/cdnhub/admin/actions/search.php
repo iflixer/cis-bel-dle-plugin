@@ -160,6 +160,15 @@ foreach ($cdnhubSearch as $data) {
 
 		$search_data['type'] = 'serial';
 		$search_data['type_ru'] = 'Сериал';
+	} elseif ($data['type'] == 'cartoon') {
+		$search_data['season'] = '';
+		$search_data['episode'] = '';
+
+		$search_data['format_season'] = '';
+		$search_data['format_episode'] = '';
+
+		$search_data['type'] = 'cartoon';
+		$search_data['type_ru'] = 'Мультфильм';
 	} else {
 		$search_data['season'] = '';
 		$search_data['episode'] = '';
