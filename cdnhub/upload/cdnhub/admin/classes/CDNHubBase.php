@@ -53,7 +53,7 @@ class CDNHubBase
 				$data = $api->base('imdb_id', $search, $offset);
 
 			if (!$data['result'])
-				$data = $api->base('title', $search, $offset);
+				$data = $api->base('title', urlencode($search), $offset);
 
 		} else {
 
