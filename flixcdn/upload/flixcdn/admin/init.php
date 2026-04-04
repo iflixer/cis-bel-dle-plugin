@@ -16,6 +16,18 @@ require_once FLIXCDN_ADMIN_DIR . '/classes/FlixCDNForm.php';
 require_once FLIXCDN_ADMIN_DIR . '/classes/FlixCDNReplacement.php';
 require_once FLIXCDN_ADMIN_DIR . '/classes/FlixCDNBase.php';
 
+// Update banner
+
+$flixcdnUpdateAvailable = false;
+$flixcdnLatestVersionFile = FLIXCDN_DIR . '/.latest_version';
+
+if (file_exists($flixcdnLatestVersionFile)) {
+	$flixcdnLatestVersion = trim(file_get_contents($flixcdnLatestVersionFile, false, null, 0, 30));
+	if ($flixcdnLatestVersion && preg_match('/^\d+(\.\d+)*$/', $flixcdnLatestVersion) && version_compare($flixcdn->version(), $flixcdnLatestVersion, '<')) {
+		$flixcdnUpdateAvailable = $flixcdnLatestVersion;
+	}
+}
+
 // Route
 
 $actionDir = FLIXCDN_ADMIN_DIR . '/actions';

@@ -1,6 +1,11 @@
 <?php
 
 return array (
+  'api' =>
+  array (
+    'domain' => 'https://stage-api.flixcdn.space/',
+    'token' => '',
+  ),
   'seo' =>
   array (
     'on' => 'on',
