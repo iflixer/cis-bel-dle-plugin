@@ -66,3 +66,10 @@
 	</nav>
 
 	<div class="container">
+
+		<?php if (!empty($flixcdnUpdateAvailable)): ?>
+		<div class="alert alert-warning alert-dismissible fade show" role="alert">
+			<strong>Доступно обновление!</strong> Вышла новая версия FlixCDN <?php echo htmlspecialchars($flixcdnUpdateAvailable); ?>. Текущая версия: <?php echo htmlspecialchars($flixcdn->version()); ?>.
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+		<?php endif; ?>
