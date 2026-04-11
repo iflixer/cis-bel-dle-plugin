@@ -63,4 +63,4 @@ require_once ENGINE_DIR . '/api/api.class.php';
 
 $dle_api->install_admin_module('flixcdn', 'FlixCDN', '', 'engine/skins/images/flixcdn.png', '1');
 
-echo 'Админпанель модуля FlixCDN успешно установлена!';
+echo 'Адмінпанель модуля FlixCDN успішно встановлена!';

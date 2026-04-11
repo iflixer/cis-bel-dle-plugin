@@ -1,13 +1,13 @@
 <?php
 
-$pageTitle = 'FlixCDN - Мониторинг новинок';
+$pageTitle = 'FlixCDN - Моніторинг новинок';
 
 include dirname(__FILE__) . '/header.php';
 
 ?>
 
 <?php if ($_SESSION['mass_insert_success']) { ?>
-	<div class="alert alert-success">Выбранные результаты добавлены успешно</div>
+	<div class="alert alert-success">Вибрані результати додані успішно</div>
 <?php } unset($_SESSION['mass_insert_success']); ?>
 
 <?php if ($this->config['api']['token']) { ?>
@@ -25,10 +25,10 @@ include dirname(__FILE__) . '/header.php';
 				  <input type="hidden" name="action" value="base">
 				  <div class="row">
 				    <div class="col">
-				      <input type="text" name="search" class="form-control" value="<?php echo $search; ?>" placeholder="Название ролика или Кинопоиск ID">
+				      <input type="text" name="search" class="form-control" value="<?php echo $search; ?>" placeholder="Назва ролика або Кінопошук ID">
 				    </div>
 				    <div class="col-5" style="margin-left: -20px;">
-				      <button type="submit" class="btn btn-primary">Искать</button>
+				      <button type="submit" class="btn btn-primary">Шукати</button>
 				    </div>
 				  </div>
 				</form>
@@ -40,7 +40,7 @@ include dirname(__FILE__) . '/header.php';
 
 
 	<div class="card bg-secondary mb-3">
-  	<div class="card-header">Мониторинг новинок</div>
+  	<div class="card-header">Моніторинг новинок</div>
   	<div class="card-body">
 
 				<form id="baseForm" action="" method="POST">
@@ -52,17 +52,17 @@ include dirname(__FILE__) . '/header.php';
 						<tr>
 							<th scope="col" style="min-width:143px">ID</th>
 							<th scope="col" style="min-width:100px">Дата</th>
-							<th scope="col">Название</th>
-							<th scope="col">Качество</th>
+							<th scope="col">Назва</th>
+							<th scope="col">Якість</th>
 							<th scope="col">Озвучка</th>
-							<th scope="col">Год</th>
+							<th scope="col">Рік</th>
 							<th scope="col">
 								<div class="form-check">
-									<input type="checkbox" class="form-check-input" title="Выделить все" id="baseInsertAll">
+									<input type="checkbox" class="form-check-input" title="Виділити все" id="baseInsertAll">
 									<label class="form-check-label" for="baseInsertAll"></label>
 								</div>
 							</th>
-							<th scope="col">Наличие</th>
+							<th scope="col">Наявність</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -172,11 +172,11 @@ include dirname(__FILE__) . '/header.php';
 
 						    <?php if ($next) { ?>
 							    <li class="page-item">
-							      <a class="page-link" href="<?php echo $next; ?>">Далее</a>
+							      <a class="page-link" href="<?php echo $next; ?>">Далі</a>
 							    </li>
 						  	<?php } else { ?>
 						  		<li class="page-item disabled">
-							      <span class="page-link">Далее</span>
+							      <span class="page-link">Далі</span>
 							    </li>
 						  	<?php } ?>
 
@@ -189,14 +189,14 @@ include dirname(__FILE__) . '/header.php';
 
 						<div class="col" style="padding-right:0">
 							<select class="form-select" id="baseMassAction" name="mass_action">
-								<option value="">Выберите действие</option>
-								<option value="kp_ids">Получить список Кинопоиск ID</option>
-								<option value="add_news">Добавить новости на сайте</option>
+								<option value="">Оберіть дію</option>
+								<option value="kp_ids">Отримати список Кінопошук ID</option>
+								<option value="add_news">Додати новини на сайті</option>
 							</select>
 						</div>
 
 						<div class="col-4" style="padding-right:0">
-							<button type="submit" class="btn btn-success base-submit" title="Выполнить действие">Выполнить</button>
+							<button type="submit" class="btn btn-success base-submit" title="Виконати дію">Виконати</button>
 						</div>
 
 					</div>
@@ -215,7 +215,7 @@ include dirname(__FILE__) . '/header.php';
 	<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="kpIdsListModalLabel">Список выбранных Кинопоиск ID</h5>
+				<h5 class="modal-title" id="kpIdsListModalLabel">Список вибраних Кінопошук ID</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true"></span>
 		        </button>
@@ -231,7 +231,7 @@ include dirname(__FILE__) . '/header.php';
 
 <?php } else { ?>
 
-<div class="alert alert-warning">Чтобы получить доступ к этому разделу укажите в настройках свой персональный api токен</div>
+<div class="alert alert-warning">Щоб отримати доступ до цього розділу, вкажіть у налаштуваннях свій персональний api токен</div>
 
 <?php } ?>
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="uk">
 <head>
 	
 	<meta charset="utf-8">
@@ -30,36 +30,36 @@
 	      <ul class="navbar-nav me-auto">
 	        <li class="nav-item">
 						<a class="nav-link<?php echo (stripos($action, 'settings') !== false ? ' active' : ''); ?>" href="<?php echo flixcdn_action('settings'); ?>">
-							Настройки модуля
+							Налаштування модуля
 						</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link<?php echo (stripos($action, 'replacement') !== false ? ' active' : ''); ?>" href="<?php echo flixcdn_action('replacement'); ?>">
-							Массовое проставление данных
+							Масове проставлення даних
 						</a>
 					</li>
 					<li class="nav-item dropdown">
-						<a class="nav-link<?php echo (stripos($action, 'base') !== false ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>">Мониторинг новинок</a>
-						<!-- <a class="nav-link dropdown-toggle<?php echo (stripos($action, 'base') !== false ? ' active' : ''); ?>" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Мониторинг новинок</a>
+						<a class="nav-link<?php echo (stripos($action, 'base') !== false ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>">Моніторинг новинок</a>
+						<!-- <a class="nav-link dropdown-toggle<?php echo (stripos($action, 'base') !== false ? ' active' : ''); ?>" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Моніторинг новинок</a>
 						<div class="dropdown-menu" style="">
-							<a class="dropdown-item" href="<?php echo flixcdn_action('base'); ?>">Поиск по базе</a>
+							<a class="dropdown-item" href="<?php echo flixcdn_action('base'); ?>">Пошук по базі</a>
 							<div class="dropdown-divider"></div>
-							<a class="dropdown-item disabled" href="#">Фильмы</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && !$cat && !$search ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies">Все</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && $cat == 2 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies&cat=2">Русские</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && $cat == 3 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies&cat=3">Зарубежные</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && $cat == 4 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies&cat=4">Аниме</a>
+							<a class="dropdown-item disabled" href="#">Фільми</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && !$cat && !$search ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies">Усі</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && $cat == 2 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies&cat=2">Російські</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && $cat == 3 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies&cat=3">Зарубіжні</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'movies' && $cat == 4 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=movies&cat=4">Аніме</a>
 							<div class="dropdown-divider"></div>
-							<a class="dropdown-item disabled" href="#">Сериалы</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && !$cat ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials">Все</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && $cat == 2 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials&cat=2">Русские</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && $cat == 3 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials&cat=3">Зарубежные</a>
-							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && $cat == 4 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials&cat=4">Аниме</a>
+							<a class="dropdown-item disabled" href="#">Серіали</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && !$cat ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials">Усі</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && $cat == 2 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials&cat=2">Російські</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && $cat == 3 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials&cat=3">Зарубіжні</a>
+							<a class="dropdown-item<?php echo (stripos($action, 'base') !== false && $section == 'serials' && $cat == 4 ? ' active' : ''); ?>" href="<?php echo flixcdn_action('base'); ?>&section=serials&cat=4">Аніме</a>
 						</div> -->
 					</li>
 	      </ul>
 	      <form class="d-flex">
-	        <a href="<?php echo $PHP_SELF; ?>" class="btn btn-secondary" target="_blank">Админпанель сайта</a>
+	        <a href="<?php echo $PHP_SELF; ?>" class="btn btn-secondary" target="_blank">Адмінпанель сайту</a>
 	      </form>
 	    </div>
 	  </div>
@@ -69,7 +69,7 @@
 
 		<?php if (!empty($flixcdnUpdateAvailable)): ?>
 		<div class="alert alert-warning alert-dismissible fade show" role="alert">
-			<strong>Доступно обновление!</strong> Вышла новая версия FlixCDN <?php echo htmlspecialchars($flixcdnUpdateAvailable); ?>. Текущая версия: <?php echo htmlspecialchars($flixcdn->version()); ?>.
+			<strong>Доступне оновлення!</strong> Вийшла нова версія FlixCDN <?php echo htmlspecialchars($flixcdnUpdateAvailable); ?>. Поточна версія: <?php echo htmlspecialchars($flixcdn->version()); ?>.
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
 		<?php endif; ?>

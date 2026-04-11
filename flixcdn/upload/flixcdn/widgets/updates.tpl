@@ -28,7 +28,7 @@
 
 			<div>
 				[season]{season} сезон[/season]
-				[episodes]{episodes} серия[/episodes]
+				[episodes]{episodes} серія[/episodes]
 			</div>
 
 		</a>

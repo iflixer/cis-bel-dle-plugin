@@ -56,14 +56,14 @@ $output .= "<div class=\"form-group\">
 
 	<div class=\"vh\">
 		
-		<input type=\"text\" id=\"vhSearchTitle\" class=\"vh-form-control\" placeholder=\"Название видео\" title=\"Заполните для поиска видео в базе по названию\">
+		<input type=\"text\" id=\"vhSearchTitle\" class=\"vh-form-control\" placeholder=\"Назва відео\" title=\"Заповніть для пошуку відео в базі за назвою\">
 
-		<button type=\"button\" id=\"vhSearch\" class=\"vh-btn vh-btn-primary\">Найти в базе FlixCDN</button>
-		<button type=\"button\" id=\"vhClearSearch\" class=\"vh-btn vh-btn-danger\" style=\"display:none\">Очитстить поиск</button>
-		<button type=\"button\" id=\"vhClearSource\" class=\"vh-btn vh-btn-warning\" style=\"display:none\">Удалить ссылку на источник</button>
+		<button type=\"button\" id=\"vhSearch\" class=\"vh-btn vh-btn-primary\">Знайти в базі FlixCDN</button>
+		<button type=\"button\" id=\"vhClearSearch\" class=\"vh-btn vh-btn-danger\" style=\"display:none\">Очистити пошук</button>
+		<button type=\"button\" id=\"vhClearSource\" class=\"vh-btn vh-btn-warning\" style=\"display:none\">Видалити посилання на джерело</button>
 
 		<div id=\"vhNotFound\" style=\"display:none\">
-			По вашему запросу в базе ничего не найдено
+			За вашим запитом у базі нічого не знайдено
 		</div>
 
 		<div id=\"vhSearchResults\" style=\"display:none\"></div>
@@ -74,12 +74,12 @@ $output .= "<div class=\"form-group\">
 		<div class=\"modal-dialog modal-lg\">
 			<div class=\"modal-content\">
 				<div class=\"modal-header\">
-					<h5 class=\"modal-title\" id=\"vhWriteModalTitle\">Заполнение полей</h5>
+					<h5 class=\"modal-title\" id=\"vhWriteModalTitle\">Заповнення полів</h5>
 					<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
 				</div>
 				<div class=\"modal-body\">
 					
-					<h4 class=\"card-header sub-card-header mb-3\"><label><input class=\"checkAll\" type=\"checkbox\" value=\"1\" checked> Выберите поля которые нужно заполнять</label></h4>
+					<h4 class=\"card-header sub-card-header mb-3\"><label><input class=\"checkAll\" type=\"checkbox\" value=\"1\" checked> Оберіть поля які потрібно заповнювати</label></h4>
 					
 					<div class=\"row\" style=\"padding-left:15px;padding-right:15px\">
 
@@ -89,67 +89,67 @@ $output .= "<div class=\"form-group\">
 							FlixCDNForm::checkbox(
 								'xfeildSource',
 								'xfields[source]',
-								'Источник видео',
+								'Джерело відео',
 								true,
 								$write['source'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfeildQuality',
 								'xfields[quality]',
-								'Качество видео',
+								'Якість відео',
 								true,
 								$write['quality'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldTranslation',
 								'xfields[translation]',
-								'Перевод',
+								'Переклад',
 								true,
 								$write['translation'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldTranslations',
 								'xfields[translations]',
-								'Список переводов сериала',
+								'Список перекладів серіалу',
 								true,
 								$write['translations'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldSeason',
 								'xfields[season]',
-								'Номер последнего сезона',
+								'Номер останнього сезону',
 								true,
 								$write['season'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldEpisode',
 								'xfields[episode]',
-								'Номер последней серии',
+								'Номер останньої серії',
 								true,
 								$write['episode'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldCustomQuality',
 								'xfields[custom_quality]',
-								'Качетсво видео (с заменой)',
+								'Якість відео (із заміною)',
 								true,
 								$write['custom_quality'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldCustomTranslation',
 								'xfields[custom_translation]',
-								'Перевод (с заменой)',
+								'Переклад (із заміною)',
 								true,
 								$write['custom_translation'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldCustomTranslations',
 								'xfields[custom_translations]',
-								'Список переводов сериала (с заменой)',
+								'Список перекладів серіалу (із заміною)',
 								true,
 								$write['custom_translations'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldFormatSeason',
 								'xfields[format_season]',
-								'Форматированный сезон',
+								'Форматований сезон',
 								true,
 								$write['format_season'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldFormatEpisode',
 								'xfields[format_episode]',
-								'Форматированная серия',
+								'Форматована серія',
 								true,
 								$write['format_episode'] ? false : true
 							),
@@ -162,13 +162,13 @@ $output .= "<div class=\"form-group\">
 							FlixCDNForm::checkbox(
 								'xfieldTitleRus',
 								'xfields[title_rus]',
-								'Название на Русском',
+								'Назва Російською',
 								true,
 								$write['title_rus'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldTitleOrig',
 								'xfields[title_orig]',
-								'Оригинальное название',
+								'Оригінальна назва',
 								true,
 								$write['title_orig'] ? false : true
 							) . FlixCDNForm::checkbox(
@@ -180,37 +180,37 @@ $output .= "<div class=\"form-group\">
 							) . FlixCDNForm::checkbox(
 								'xfieldDescription',
 								'xfields[description]',
-								'Описание',
+								'Опис',
 								true,
 								$write['description'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldYear',
 								'xfields[year]',
-								'Год выпуска',
+								'Рік випуску',
 								true,
 								$write['year'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldDuration',
 								'xfields[duration]',
-								'Продолжительность видео',
+								'Тривалість відео',
 								true,
 								$write['duration'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldGenres',
 								'xfields[genres]',
-								'Жанры',
+								'Жанри',
 								true,
 								$write['genres'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldCountries',
 								'xfields[countries]',
-								'Страны',
+								'Країни',
 								true,
 								$write['countries'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'xfieldAge',
 								'xfields[age]',
-								'Возрастное ограничение',
+								'Вікове обмеження',
 								true,
 								$write['age'] ? false : true
 							) . FlixCDNForm::checkbox(
@@ -225,7 +225,7 @@ $output .= "<div class=\"form-group\">
 
 					</div>
 						
-					<h4 class=\"card-header sub-card-header mb-3\"><label><input class=\"checkAll\" type=\"checkbox\" value=\"1\" checked> Укажите какие СЕО данные нужно заполнять</label></h4>
+					<h4 class=\"card-header sub-card-header mb-3\"><label><input class=\"checkAll\" type=\"checkbox\" value=\"1\" checked> Вкажіть які СЕО дані потрібно заповнювати</label></h4>
 						
 					<div class=\"row\" style=\"padding-left:15px;padding-right:15px\">
 
@@ -235,25 +235,25 @@ $output .= "<div class=\"form-group\">
 							FlixCDNForm::checkbox(
 								'seoUrl',
 								'seo[url]',
-								'ЧПУ новости',
+								'ЧПУ новини',
 								true,
 								$flixcdn->config['seo']['url'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'seoTitle',
 								'seo[title]',
-								'Заголовок новости',
+								'Заголовок новини',
 								true,
 								$flixcdn->config['seo']['title'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'seoMetaTitle',
 								'seo[meta_title]',
-								'Мета-заголовок новости',
+								'Мета-заголовок новини',
 								true,
 								$flixcdn->config['seo']['meta']['title'] ? false : true
 							) . FlixCDNForm::checkbox(
 								'seoMetaDescription',
 								'seo[meta_description]',
-								'Мета-описание новости',
+								'Мета-опис новини',
 								true,
 								$flixcdn->config['seo']['meta']['description'] ? false : true
 							),
@@ -264,8 +264,8 @@ $output .= "<div class=\"form-group\">
 
 				</div>
 				<div class=\"modal-footer\">
-					<button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Закрыть</button>
-					<button type=\"button\" class=\"btn btn-primary\" style=\"margin-bottom:0.25rem\" id=\"vhWrtieSelectedFields\">Заполнить поля</button>
+					<button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Закрити</button>
+					<button type=\"button\" class=\"btn btn-primary\" style=\"margin-bottom:0.25rem\" id=\"vhWrtieSelectedFields\">Заповнити поля</button>
 				</div>
 			</div>
 		</div>

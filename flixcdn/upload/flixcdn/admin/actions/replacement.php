@@ -1,6 +1,6 @@
 <?php
 
-$pageTitle = 'FlixCDN - Массовое проставление данных';
+$pageTitle = 'FlixCDN - Масове проставлення даних';
 
 include dirname(__FILE__) . '/header.php';
 
@@ -9,14 +9,14 @@ include dirname(__FILE__) . '/header.php';
 <form id="replacementForm" action="">
 
 	<div class="card bg-secondary mb-3">
-  <div class="card-header">Массовое проставление данных</div>
+  <div class="card-header">Масове проставлення даних</div>
   <div class="card-body">
 			
 				<div class="row">
 							
 					<?php echo FlixCDNForm::group(
 						'fields',
-						'Поля для поиска',
+						'Поля для пошуку',
 						'<div class="row"><div class="col">' . FlixCDNForm::checkbox(
 							'kinopoisk',
 							'replacement[search][kinopoisk_id]',
@@ -28,18 +28,18 @@ include dirname(__FILE__) . '/header.php';
 							'IMDb&nbsp;ID',
 							false
 						) . '</div><div class="col"></div><div class="col"></div></div>',
-						'Поля для поиска видео в базе'
+						'Поля для пошуку відео в базі'
 					); ?>
 
 					<?php echo FlixCDNForm::group(
 						'rewrite',
-						'Перезаписывать',
+						'Перезаписувати',
 						FlixCDNForm::_switch(
 							'rewrite',
 							'replacement[rewrite]',
 							false
 						),
-						'Перезаписывать данные если они были заполнены ранее'
+						'Перезаписувати дані якщо вони були заповнені раніше'
 					); ?>
 
 				</div>
@@ -58,15 +58,15 @@ include dirname(__FILE__) . '/header.php';
 
 					<?php echo FlixCDNForm::group(
 						'category',
-						'Категории',
-						"<select data-placeholder=\"Выберите категории ...\" name=\"replacement[category][]\" id=\"category\" onchange=\"onCategoryChange(this)\" class=\"categoryselect\" multiple style=\"width:100%;max-width:350px\">
+						'Категорії',
+						"<select data-placeholder=\"Оберіть категорії ...\" name=\"replacement[category][]\" id=\"category\" onchange=\"onCategoryChange(this)\" class=\"categoryselect\" multiple style=\"width:100%;max-width:350px\">
 							{$categories_list}
 						</select>
-						<div class=\"form-check\" style=\"float:right;margin-top:-30px;position:relative\" title=\"Исключить выбранные категории\">
+						<div class=\"form-check\" style=\"float:right;margin-top:-30px;position:relative\" title=\"Виключити вибрані категорії\">
 							<input type=\"checkbox\" name=\"replacement[category_inverse]\" value=\"1\" class=\"form-check-input\" id=\"categoryInverse\">
 							<label class=\"form-check-label\" for=\"categoryInverse\"></label>
 						</div>",
-						'Категории новостей'
+						'Категорії новин'
 					); ?>
 
 					<?php echo FlixCDNForm::group(
@@ -76,13 +76,13 @@ include dirname(__FILE__) . '/header.php';
 							'status',
 							'replacement[status]',
 							array(
-								0 => 'Все',
-								1 => 'Опубликованные',
-								2 => 'На модерации',
+								0 => 'Усі',
+								1 => 'Опубліковані',
+								2 => 'На модерації',
 							),
 							''
 						),
-						'Статус новостей'
+						'Статус новин'
 					); ?>
 
 				</div>
@@ -110,12 +110,12 @@ include dirname(__FILE__) . '/header.php';
 							),
 							3
 						),
-						'Выставите оптимальное кол-во одновременных потоков</i>'
+						'Встановіть оптимальну кількість одночасних потоків</i>'
 					); ?>
 
 					<?php echo FlixCDNForm::group(
 						'interval',
-						'Интервал',
+						'Інтервал',
 						FlixCDNForm::select(
 							'interval',
 							'replacement[interval]',
@@ -131,7 +131,7 @@ include dirname(__FILE__) . '/header.php';
 							),
 							1000
 						),
-						'Выставите оптимальный интервал межу запуском потоков</i>'
+						'Встановіть оптимальний інтервал між запуском потоків</i>'
 					); ?>
 
 				</div>
@@ -141,7 +141,7 @@ include dirname(__FILE__) . '/header.php';
 						<div class="form-check my-1 mr-sm-2">
 							<input type="checkbox" value="1" class="form-check-input checkAll" style="margin-top:1px" checked>
 						</div>
-						<span style="padding-left:23px">Выберите поля которые нужно заполнять</span>
+						<span style="padding-left:23px">Оберіть поля які потрібно заповнювати</span>
 					</label>
 				</h4>
 					
@@ -153,67 +153,67 @@ include dirname(__FILE__) . '/header.php';
 						FlixCDNForm::checkbox(
 							'replacementXfeildsSource',
 							'replacement[xfields][source]',
-							'Источник видео',
+							'Джерело відео',
 							true,
 							$flixcdn->config['xfields']['write']['source'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsQuality',
 							'replacement[xfields][quality]',
-							'Качество видео',
+							'Якість відео',
 							true,
 							$flixcdn->config['xfields']['write']['quality'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsTranslation',
 							'replacement[xfields][translation]',
-							'Перевод',
+							'Переклад',
 							true,
 							$flixcdn->config['xfields']['write']['translation'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsTranslations',
 							'replacement[xfields][translations]',
-							'Список переводов сериала',
+							'Список перекладів серіалу',
 							true,
 							$flixcdn->config['xfields']['write']['translations'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsSeason',
 							'replacement[xfields][season]',
-							'Номер последнего сезона',
+							'Номер останнього сезону',
 							true,
 							$flixcdn->config['xfields']['write']['season'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsEpisode',
 							'replacement[xfields][episode]',
-							'Номер последней серии',
+							'Номер останньої серії',
 							true,
 							$flixcdn->config['xfields']['write']['episode'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsCustomQuality',
 							'replacement[xfields][custom_quality]',
-							'Качетсво видео (с заменой)',
+							'Якість відео (із заміною)',
 							true,
 							$flixcdn->config['xfields']['write']['custom_quality'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsCustomTranslation',
 							'replacement[xfields][custom_translation]',
-							'Перевод (с заменой)',
+							'Переклад (із заміною)',
 							true,
 							$flixcdn->config['xfields']['write']['custom_translation'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsCustomTranslations',
 							'replacement[xfields][custom_translations]',
-							'Список переводов сериала (с заменой)',
+							'Список перекладів серіалу (із заміною)',
 							true,
 							$flixcdn->config['xfields']['write']['custom_translations'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsFormatSeason',
 							'replacement[xfields][format_season]',
-							'Форматированный сезон',
+							'Форматований сезон',
 							true,
 							$flixcdn->config['xfields']['write']['format_season'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsFormatEpisode',
 							'replacement[xfields][format_episode]',
-							'Форматированная серия',
+							'Форматована серія',
 							true,
 							$flixcdn->config['xfields']['write']['format_episode'] ? false : true
 						),
@@ -226,13 +226,13 @@ include dirname(__FILE__) . '/header.php';
 						FlixCDNForm::checkbox(
 							'replacementXfeildsTitleRus',
 							'replacement[xfields][title_rus]',
-							'Название на Русском',
+							'Назва Російською',
 							true,
 							$flixcdn->config['xfields']['write']['title_rus'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsTitleOrig',
 							'replacement[xfields][title_orig]',
-							'Оригинальное название',
+							'Оригінальна назва',
 							true,
 							$flixcdn->config['xfields']['write']['title_orig'] ? false : true
 						) . FlixCDNForm::checkbox(
@@ -244,37 +244,37 @@ include dirname(__FILE__) . '/header.php';
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsDescription',
 							'replacement[xfields][description]',
-							'Описание',
+							'Опис',
 							true,
 							$flixcdn->config['xfields']['write']['description'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsYear',
 							'replacement[xfields][year]',
-							'Год выпуска',
+							'Рік випуску',
 							true,
 							$flixcdn->config['xfields']['write']['year'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsDuration',
 							'replacement[xfields][duration]',
-							'Продолжительность видео',
+							'Тривалість відео',
 							true,
 							$flixcdn->config['xfields']['write']['duration'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsGenres',
 							'replacement[xfields][genres]',
-							'Жанры',
+							'Жанри',
 							true,
 							$flixcdn->config['xfields']['write']['genres'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsCountries',
 							'replacement[xfields][countries]',
-							'Страны',
+							'Країни',
 							true,
 							$flixcdn->config['xfields']['write']['countries'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementXfeildsAge',
 							'replacement[xfields][age]',
-							'Возрастное ограничение',
+							'Вікове обмеження',
 							true,
 							$flixcdn->config['xfields']['write']['age'] ? false : true
 						) . FlixCDNForm::checkbox(
@@ -294,7 +294,7 @@ include dirname(__FILE__) . '/header.php';
 						<div class="form-check my-1 mr-sm-2">
 							<input type="checkbox" value="1" class="form-check-input checkAll" style="margin-top:1px" checked>
 						</div>
-						<span style="padding-left:23px">Укажите какие СЕО данные нужно заполнять</span>
+						<span style="padding-left:23px">Вкажіть які СЕО дані потрібно заповнювати</span>
 					</label>
 				</h4>
 					
@@ -306,25 +306,25 @@ include dirname(__FILE__) . '/header.php';
 						FlixCDNForm::checkbox(
 							'replacementSeoUrl',
 							'replacement[seo][url]',
-							'ЧПУ новости',
+							'ЧПУ новини',
 							true,
 							$flixcdn->config['seo']['url'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementSeoTitle',
 							'replacement[seo][title]',
-							'Заголовок новости',
+							'Заголовок новини',
 							true,
 							$flixcdn->config['seo']['title'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementSeoMetaTitle',
 							'replacement[seo][meta_title]',
-							'Мета-заголовок новости',
+							'Мета-заголовок новини',
 							true,
 							$flixcdn->config['seo']['meta']['title'] ? false : true
 						) . FlixCDNForm::checkbox(
 							'replacementSeoMetaDescription',
 							'replacement[seo][meta_description]',
-							'Мета-описание новости',
+							'Мета-опис новини',
 							true,
 							$flixcdn->config['seo']['meta']['description'] ? false : true
 						),
@@ -344,10 +344,10 @@ include dirname(__FILE__) . '/header.php';
 	<table class="table table-hover" id="replacementStatus" data-status="abort" data-post-id="0">
 		<thead>
 			<tr>
-				<th scope="col">Осталось</th>
-				<th scope="col">Успешно</th>
-				<th scope="col">Существует</th>
-				<th scope="col">Не&nbsp;найдено</th>
+				<th scope="col">Залишилось</th>
+				<th scope="col">Успішно</th>
+				<th scope="col">Існує</th>
+				<th scope="col">Не&nbsp;знайдено</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -361,9 +361,9 @@ include dirname(__FILE__) . '/header.php';
 	</table>
 </div>
 
-<button id="replacementStart" type="button" class="btn btn-success">Начать</button>
-<button id="replacementStop" style="display:none" type="button" class="btn btn-light">Остановить</button>
-<button id="replacementAbort" style="display:none" type="button" class="btn btn-danger">Отменить</button>
+<button id="replacementStart" type="button" class="btn btn-success">Почати</button>
+<button id="replacementStop" style="display:none" type="button" class="btn btn-light">Зупинити</button>
+<button id="replacementAbort" style="display:none" type="button" class="btn btn-danger">Скасувати</button>
 
 <div class="mb-3"></div>
 

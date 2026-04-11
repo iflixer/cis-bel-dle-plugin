@@ -8,18 +8,18 @@ if (!$flixcdn->config['serials']['updates']['on'])
 	return false;
 
 $month = array(
-	1 => 'января',
-	2 => 'февраля',
-	3 => 'марта',
-	4 => 'апреля',
-	5 => 'мая',
-	6 => 'июня',
-	7 => 'июля',
-	8 => 'августа',
-	9 => 'сентября',
-	10 => 'октября',
-	11 => 'ноября',
-	12 => 'декабря'
+	1 => 'січня',
+	2 => 'лютого',
+	3 => 'березня',
+	4 => 'квітня',
+	5 => 'травня',
+	6 => 'червня',
+	7 => 'липня',
+	8 => 'серпня',
+	9 => 'вересня',
+	10 => 'жовтня',
+	11 => 'листопада',
+	12 => 'грудня'
 );
 
 $days = intval($flixcdn->config['serials']['updates']['days']) ? intval($flixcdn->config['serials']['updates']['days']) : 7;
@@ -141,9 +141,9 @@ if ($cache) {
 			$_days = str_replace('[/date-prefix]', '', $_days);
 
 			if ($today)
-				$_days = str_replace('{date-prefix}', 'Сегодня', $_days);
+				$_days = str_replace('{date-prefix}', 'Сьогодні', $_days);
 			else
-				$_days = str_replace('{date-prefix}', 'Вчера', $_days);
+				$_days = str_replace('{date-prefix}', 'Вчора', $_days);
 		} else {
 			$_days = preg_replace("#\[date-prefix\].*?\[/date-prefix\]#si", '', $_days);
 		}

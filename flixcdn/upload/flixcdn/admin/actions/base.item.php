@@ -22,7 +22,7 @@
 					<?php echo $item['season']; ?> Сезон,
 				<?php } ?>
 				<?php if (isset($item['episode']) && $item['episode'] !== '' && $item['episode'] !== null) { ?>
-					<?php echo $item['episode']; ?> Серия
+					<?php echo $item['episode']; ?> Серія
 				<?php } ?>
 			</span>
 		</div>
@@ -52,6 +52,6 @@
 	</td>
 	<td>
 		<?php if ($_links) { ?>
-			<?php echo ($exist ? '<span style="display:inline-block;padding: 0 6px;" class="bg-success text-white pl-1 pr-1" title="Наличие новости на сайте">Да</span>' : '<div style="display:inline-block;color:#ccc;padding: 0 6px;" class="bg-light pl-1 pr-1" title="Наличие новости на сайте">Нет</div>'); ?>
+			<?php echo ($exist ? '<span style="display:inline-block;padding: 0 6px;" class="bg-success text-white pl-1 pr-1" title="Наявність новини на сайті">Так</span>' : '<div style="display:inline-block;color:#ccc;padding: 0 6px;" class="bg-light pl-1 pr-1" title="Наявність новини на сайті">Ні</div>'); ?>
 		<?php } ?></td>
 </tr>

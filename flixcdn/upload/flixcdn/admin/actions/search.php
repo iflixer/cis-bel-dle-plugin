@@ -159,7 +159,7 @@ foreach ($flixcdnSearch as $data) {
 		}
 
 		$search_data['type'] = 'serial';
-		$search_data['type_ru'] = 'Сериал';
+		$search_data['type_ru'] = 'Серіал';
 	} else {
 		$search_data['season'] = '';
 		$search_data['episode'] = '';
@@ -168,7 +168,7 @@ foreach ($flixcdnSearch as $data) {
 		$search_data['format_episode'] = '';
 
 		$search_data['type'] = 'movie';
-		$search_data['type_ru'] = 'Фильм';
+		$search_data['type_ru'] = 'Фільм';
 	}
 
 	// Seo
