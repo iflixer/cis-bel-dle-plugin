@@ -32,6 +32,11 @@ class FlixCDNApi
 		return $this->latestVersion;
 	}
 
+	private static $seriesTypes = [
+		'serial', 'tv-series', 'anime-tv-series', 'tv-show', 'cartoon-series',
+		'episode', 'tvshow', 'animeserial', 'showserial',
+	];
+
 	protected static function normalizeItem($item)
 	{
 		if (!$item || !is_array($item))
@@ -48,6 +53,14 @@ class FlixCDNApi
 
 		if (!array_key_exists('season', $item))
 			$item['season'] = '';
+
+		$item['original_type'] = $item['type'] ?? '';
+
+		if (array_key_exists('has_series', $item)) {
+			$item['type'] = $item['has_series'] ? 'serial' : 'movie';
+		} elseif (isset($item['type'])) {
+			$item['type'] = in_array($item['type'], self::$seriesTypes, true) ? 'serial' : 'movie';
+		}
 
 		return $item;
 	}
