@@ -3,7 +3,7 @@
 return array (
   'api' =>
   array (
-    'domain' => 'https://stage-api.flixcdn.space/',
+    'domain' => 'https://ua-stage-api.flixcdn.space/',
     'token' => '',
   ),
   'seo' =>
