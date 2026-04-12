@@ -585,7 +585,7 @@ include dirname(__FILE__) . '/header.php';
 								'У категорії DLE',
 								'categories',
 								$flixcdn->config['genres_storage'] ?? 'xfields'
-							) . '<div class="text-muted mb-2">Жанри будуть прив'язуватися до існуючих категорій DLE</div>',
+							) . '<div class="text-muted mb-2">Жанри будуть прив\'язуватися до існуючих категорій DLE</div>',
 							'Оберіть спосіб зберігання жанрів у системі'
 						); ?>
 
