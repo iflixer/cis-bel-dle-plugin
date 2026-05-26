@@ -3,7 +3,7 @@
 	<name>FlixCDN</name>
 	<description></description>
 	<icon>engine/skins/images/flixcdn.png</icon>
-	<version>4.2.2</version>
+	<version>4.2.3</version>
 	<dleversion></dleversion>
 	<versioncompare>less</versioncompare>
 	<upgradeurl></upgradeurl>
@@ -94,10 +94,6 @@ fclose($fh);]]></phpdisable>
 		</operation>
 	</file>
 	<file name="engine/modules/main.php">
-		<operation action="before">
-			<searchcode><![CDATA[$tpl->compile ( 'main' );]]></searchcode>
-			<replacecode><![CDATA[$flixcdn->view(array('script'));]]></replacecode>
-		</operation>
 		<operation action="before">
 			<searchcode><![CDATA[GzipOut();]]></searchcode>
 			<replacecode><![CDATA[if (!intval($flixcdn->config['update']['type'])) { $flixcdn->update(); }]]></replacecode>

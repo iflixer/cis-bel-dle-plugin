@@ -16,20 +16,12 @@ class FlixCDNView
 
 	}
 
-	// Script
+	// Script (kept as no-op for legacy installs whose engine/modules/main.php
+	// still contains the $flixcdn->view(array('script')) call from prior versions)
 
 	public function script()
 	{
-
-		global $config, $tpl;
-
-		if (defined('NEWS_ID')) {
-			$tpl->set('</body>', flixcdn_js('/flixcdn/assets/js/actualize.js') . '</body>');
-
-			return true;
-		} else
-			return false;
-
+		return false;
 	}
 
 	// Player

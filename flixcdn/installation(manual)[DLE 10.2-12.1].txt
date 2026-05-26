@@ -62,19 +62,7 @@
 
 7. Открыть файл engine/modules/main.php
 
-	находим следующий код:
-
-        $tpl->compile ( 'main' );
-
-    перед ним вставляем этот код:
-
-        // FlixCDN Script -> Begin
-
-        $flixcdn->view(array('script'));
-
-        // FlixCDN Script -> End
-
-	далее найти этот код:
+	найти этот код:
 
 		GzipOut();
 
