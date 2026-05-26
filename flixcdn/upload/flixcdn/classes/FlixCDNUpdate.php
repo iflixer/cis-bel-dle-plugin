@@ -147,50 +147,54 @@ class FlixCDNUpdate
 
 		global $db;
 
-		$find = array();
-		$select = array();
 
-		foreach ($this->search as $search) {
-			if (!$this->config['xfields']['search'][$search])
-				continue;
+		$buckets = array();
 
-			$xfield = $this->config['xfields']['search'][$search];
-
-			$ids = array();
-
-			foreach ($updates as $update) {
-				if ($update['content'][$search])
-					$ids[] = $update['content'][$search];
-			}
-
-			if ($ids) {
-				$select[] = "SUBSTRING_INDEX(SUBSTRING_INDEX(xfields,  '{$xfield}|', -1), '||', 1) `{$search}`";
-				$find[] = "SUBSTRING_INDEX(SUBSTRING_INDEX(xfields,  '{$xfield}|', -1), '||', 1) IN ('" . implode("','", $ids) . "')";
-			}
-		}
-
-		$query = 'SELECT *, ' . implode(', ', $select) . ' FROM ' . PREFIX . '_post';
-		
-		if ($find)
-			$query .= ' WHERE ' . implode(' OR ', $find);
-
-		$result = $db->query($query);
-
-		while ($row = $db->get_row($result)) {
+		foreach ($updates as $key => $update) {
 			foreach ($this->search as $search) {
 				if (!$this->config['xfields']['search'][$search])
 					continue;
 
-				if ($row[$search]) {
-					foreach ($updates as $key => $update) {
-						if ($update['content'][$search] == $row[$search])
-							$updates[$key]['post'] = $row;
-					}
-				}
+				$value = $update['content'][$search];
+
+				if (!$value)
+					continue;
+
+				if (!isset($buckets[$search]))
+					$buckets[$search] = array();
+
+				$buckets[$search][] = array('key' => $key, 'value' => $value);
+
+				break;
 			}
 		}
 
-		$db->free();
+		foreach ($buckets as $search => $entries) {
+			$xfield = $this->config['xfields']['search'][$search];
+
+			$values = array();
+			foreach ($entries as $entry) {
+				$values[(string)$entry['value']] = true;
+			}
+			$values = array_keys($values);
+
+			$expr = "SUBSTRING_INDEX(SUBSTRING_INDEX(xfields,  '{$xfield}|', -1), '||', 1)";
+			$query = 'SELECT *, ' . $expr . " `{$search}` FROM " . PREFIX . "_post WHERE " . $expr . " IN ('" . implode("','", $values) . "')";
+
+			$result = $db->query($query);
+
+			while ($row = $db->get_row($result)) {
+				if (!$row[$search])
+					continue;
+
+				foreach ($entries as $entry) {
+					if ($entry['value'] == $row[$search])
+						$updates[$entry['key']]['post'] = $row;
+				}
+			}
+
+			$db->free();
+		}
 
 		return $updates;
 
@@ -230,14 +234,16 @@ class FlixCDNUpdate
 		$updates = $this->search($need_update);
 
 		foreach ($updates as $update) {
-			if ($this->config['update']['movies']['on'] && ($update['post'] || $this->added[$update['content']['id']])) {
-				if ($this->added[$update['content']['id']])
-					$update['post'] = $this->added[$update['content']['id']];
+			if (!empty($update['content']['kinopoisk_id']) || !empty($update['content']['imdb_id'])) {
+				if ($this->config['update']['movies']['on'] && ($update['post'] || $this->added[$update['content']['id']])) {
+					if ($this->added[$update['content']['id']])
+						$update['post'] = $this->added[$update['content']['id']];
 
-				$this->movie_update($update);
-			} else {
-				if ($this->config['update']['movies']['add'])
-					$this->movie_insert($update);
+					$this->movie_update($update);
+				} else {
+					if ($this->config['update']['movies']['add'])
+						$this->movie_insert($update);
+				}
 			}
 
 			$db->query("UPDATE " . PREFIX . "_flixcdn_update_log SET `update_id` = " . intval($update['update_id']) . " WHERE `id` = 1");
@@ -647,14 +653,16 @@ class FlixCDNUpdate
 		$updates = $this->search($need_update);
 
 		foreach ($updates as $update) {
-			if ($this->config['update']['serials']['on'] && ($update['post'] || $this->added[$update['content']['id']])) {
-				if ($this->added[$update['content']['id']])
-					$update['post'] = $this->added[$update['content']['id']];
+			if (!empty($update['content']['kinopoisk_id']) || !empty($update['content']['imdb_id'])) {
+				if ($this->config['update']['serials']['on'] && ($update['post'] || $this->added[$update['content']['id']])) {
+					if ($this->added[$update['content']['id']])
+						$update['post'] = $this->added[$update['content']['id']];
 
-				$this->serial_update($update);
-			} else {
-				if ($this->config['update']['serials']['add'])
-					$this->serial_insert($update);
+					$this->serial_update($update);
+				} else {
+					if ($this->config['update']['serials']['add'])
+						$this->serial_insert($update);
+				}
 			}
 
 			$db->query("UPDATE " . PREFIX . "_flixcdn_update_log SET `update_id` = " . intval($update['update_id']) . " WHERE `id` = 2");
