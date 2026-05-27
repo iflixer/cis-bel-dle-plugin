@@ -1312,13 +1312,13 @@ class FlixCDNUpdate
 
 			case 1:
 
-				$data = "{$episode} серия";
+				$data = "{$episode} серія";
 
 				break;
 
 			case 2:
 
-				$data = $episode > 1 ? "1-{$episode} серия" : "{$episode} серия";
+				$data = $episode > 1 ? "1-{$episode} серія" : "{$episode} серія";
 
 				break;
 
@@ -1329,7 +1329,7 @@ class FlixCDNUpdate
 				for ($i = 1; $i <= $episode; $i++)
 					$data[] = $i;
 
-				$data = implode(',', $data) . ' серия';
+				$data = implode(',', $data) . ' серія';
 
 				break;
 
@@ -1345,7 +1345,7 @@ class FlixCDNUpdate
 				for ($i = $start; $i <= $episode; $i++)
 					$data[] = $i;
 
-				$data = implode(',', $data) . ' серия';
+				$data = implode(',', $data) . ' серія';
 
 				break;
 
@@ -1363,7 +1363,7 @@ class FlixCDNUpdate
 					for ($i = $start; $i <= $episode; $i++)
 						$data[] = $i;
 
-					$data = '1-' . implode(',', $data) . ' серия';
+					$data = '1-' . implode(',', $data) . ' серія';
 
 				} else {
 
@@ -1372,7 +1372,7 @@ class FlixCDNUpdate
 					for ($i = 1; $i <= $episode; $i++)
 						$data[] = $i;
 
-					$data = implode(',', $data) . ' серия';
+					$data = implode(',', $data) . ' серія';
 
 				}
 

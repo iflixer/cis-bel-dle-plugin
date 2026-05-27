@@ -3,7 +3,7 @@
 	<name>FlixCDN</name>
 	<description></description>
 	<icon>engine/skins/images/flixcdn.png</icon>
-	<version>4.2.3-ua</version>
+	<version>4.2.3</version>
 	<dleversion></dleversion>
 	<versioncompare>less</versioncompare>
 	<upgradeurl></upgradeurl>

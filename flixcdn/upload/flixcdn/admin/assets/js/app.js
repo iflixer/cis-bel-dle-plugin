@@ -95,12 +95,12 @@ $('#settingsSave').click(function() {
 		success: function(data) {
 			
 			if (data.status == 'success')
-				toast('Настройки успешно сохранены');
+				toast('Налаштування успішно збережено');
 			else {
 				if (data.message)
 					toast(data.message);
 				else
-					toast('Неизвестная ошибка');
+					toast('Невідома помилка');
 			}
 
 		},
@@ -158,7 +158,7 @@ $('body').on('click', '.custom-quality-duplicate', function() {
 	var elementParentId = 'qualityWriteAutocomplete' + $('#customQualityList > div').length;
 	var elementId = 'qualityAutocomplete' + $('#customQualityList > div').length;
 
-	var element = $('<div id="' + elementParentId + '" data-id="' + elementId + '" class="form-inline custom-quality" style="position:relative"><input id="' + elementId + '" type="text" class="form-control custom-quality-from" placeholder="Название из базы"><input type="text" class="form-control custom-quality-to" placeholder="Своё название"><button type="button" class="btn btn-danger custom-quality-delete" title="Удалить замену"><i class="fas fa-trash"></i></button></div>');
+	var element = $('<div id="' + elementParentId + '" data-id="' + elementId + '" class="form-inline custom-quality" style="position:relative"><input id="' + elementId + '" type="text" class="form-control custom-quality-from" placeholder="Назва з бази"><input type="text" class="form-control custom-quality-to" placeholder="Власна назва"><button type="button" class="btn btn-danger custom-quality-delete" title="Видалити заміну"><i class="fas fa-trash"></i></button></div>');
 
 	$('#customQualityList').append(element);
 
@@ -183,7 +183,7 @@ $('body').on('click', '.custom-translation-duplicate', function() {
 	var elementParentId = 'qualityWriteAutocomplete' + $('#customQualityList > div').length;
 	var elementId = 'translationAutocomplete' + $('#customTranslationList > div').length;
 
-	var element = $('<div id="' + elementParentId + '" data-id="' + elementId + '" class="form-inline custom-translation"><input id="' + elementId + '" type="text" class="form-control custom-translation-from" placeholder="Название из базы"><input type="text" class="form-control custom-translation-to" placeholder="Своё название"><button type="button" class="btn btn-danger custom-translation-delete" title="Удалить замену"><i class="fas fa-trash"></i></button></div>');
+	var element = $('<div id="' + elementParentId + '" data-id="' + elementId + '" class="form-inline custom-translation"><input id="' + elementId + '" type="text" class="form-control custom-translation-from" placeholder="Назва з бази"><input type="text" class="form-control custom-translation-to" placeholder="Власна назва"><button type="button" class="btn btn-danger custom-translation-delete" title="Видалити заміну"><i class="fas fa-trash"></i></button></div>');
 
 	$('#customTranslationList').append(element);
 
@@ -229,7 +229,7 @@ $('#customGenresModal').on('show.bs.modal', function() {
 });
 
 function createGenreDropdown(selectedValue) {
-	var select = $('<select class="form-control custom-genre-from"><option value="">Выберите жанр из API</option></select>');
+	var select = $('<select class="form-control custom-genre-from"><option value="">Оберіть жанр з API</option></select>');
 	
 	if (typeof genresData !== 'undefined' && genresData && genresData.length > 0) {
 		$.each(genresData, function(index, genre) {
@@ -248,7 +248,7 @@ function createCategoryDropdown(selectedValue) {
 	var select = $('<select class="form-control custom-genre-to"></select>');
 	
 	if (typeof currentStorageMode !== 'undefined' && currentStorageMode === 'categories') {
-		select.append('<option value="">Выберите категорию DLE</option>');
+		select.append('<option value="">Оберіть категорію DLE</option>');
 		if (typeof categoriesData !== 'undefined' && categoriesData && categoriesData.length > 0) {
 			$.each(categoriesData, function(index, category) {
 				var option = $('<option></option>').attr('value', category.value).text(category.text);
@@ -259,7 +259,7 @@ function createCategoryDropdown(selectedValue) {
 			});
 		}
 	} else {
-		select = $('<input type="text" class="form-control custom-genre-to" placeholder="Название для замены" value="' + (selectedValue || '') + '">');
+		select = $('<input type="text" class="form-control custom-genre-to" placeholder="Назва для заміни" value="' + (selectedValue || '') + '">');
 	}
 	
 	return select;
@@ -284,7 +284,7 @@ function updateExistingGenreRows() {
 		var $genreCol = $('<div class="col-md-5"></div>').append(createGenreDropdown(mapping.from));
 		var $categoryCol = $('<div class="col-md-5"></div>').append(createCategoryDropdown(mapping.to));
 		var $deleteCol = $('<div class="col-md-2"></div>').append(
-			'<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Удалить соответствие"><i class="fas fa-trash"></i></button>'
+			'<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Видалити відповідність"><i class="fas fa-trash"></i></button>'
 		);
 		
 		$newRow.append($genreCol).append($categoryCol).append($deleteCol);
@@ -297,7 +297,7 @@ $('body').on('click', '.custom-genre-duplicate', function() {
 	var $genreCol = $('<div class="col-md-5"></div>').append(createGenreDropdown(''));
 	var $categoryCol = $('<div class="col-md-5"></div>').append(createCategoryDropdown(''));
 	var $deleteCol = $('<div class="col-md-2"></div>').append(
-		'<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Удалить соответствие"><i class="fas fa-trash"></i></button>'
+		'<button type="button" class="btn btn-danger custom-genre-delete w-100" title="Видалити відповідність"><i class="fas fa-trash"></i></button>'
 	);
 	
 	$newRow.append($genreCol).append($categoryCol).append($deleteCol);
@@ -321,7 +321,7 @@ $(function() {
 			if (e.parent().attr('id') == 'serialsNoPriorityContainer') {
 				e.removeClass('sortable-selected');
 				e.removeClass('btn-outline-info').addClass('btn-outline-secondary');
-				e.find('a').attr('title', 'Добавить перевод');
+				e.find('a').attr('title', 'Додати переклад');
 				e.find('a').find('svg').remove();
 				e.find('a').append('<i class="fas fa-plus"></i>');
 			}
@@ -337,7 +337,7 @@ $(function() {
 			if (e.parent().attr('id') == 'serialsPriorityContainer') {
 				e.addClass('sortable-selected');
 				e.addClass('btn-outline-info').removeClass('btn-outline-secondary');
-				e.find('a').attr('title', 'Удалить перевод');
+				e.find('a').attr('title', 'Видалити переклад');
 				e.find('a').find('svg').remove();
 				e.find('a').append('<i class="fas fa-times"></i>');
 			}
@@ -349,7 +349,7 @@ $(function() {
 
 		e.addClass('sortable-selected');
 		e.addClass('btn-outline-info').removeClass('btn-outline-secondary');
-		e.find('a').attr('title', 'Удалить перевод');
+		e.find('a').attr('title', 'Видалити переклад');
 		e.find('a').find('svg').remove();
 		e.find('a').append('<i class="fas fa-times"></i>');
 
@@ -363,7 +363,7 @@ $(function() {
 
 		e.removeClass('sortable-selected');
 		e.removeClass('btn-outline-info').addClass('btn-outline-secondary');
-		e.find('a').attr('title', 'Добавить перевод');
+		e.find('a').attr('title', 'Додати переклад');
 		e.find('a').find('svg').remove();
 		e.find('a').append('<i class="fas fa-plus"></i>');
 
@@ -382,7 +382,7 @@ if ($('#replacementStatus').length) {
 
 	$('.categoryselect').chosen({
 		allow_single_deselect: true,
-		no_results_text: 'Ничего не найдено'
+		no_results_text: 'Нічого не знайдено'
 	});
 
 	// Replacement -> Working
@@ -409,7 +409,7 @@ if ($('#replacementStatus').length) {
 
 			if (fields.length == 0) {
 				replacementAbort(true);
-				toast('Не указано ни одного поля для поиска');
+				toast('Не вказано жодного поля для пошуку');
 				return false;
 			}
 
@@ -480,7 +480,7 @@ if ($('#replacementStatus').length) {
 
 			if (xf.length == 0) {
 				replacementAbort(true);
-				toast('Не указано ни одного поля для заполнения данных');
+				toast('Не вказано жодного поля для заповнення даних');
 				return false;
 			}
 			
@@ -531,7 +531,7 @@ if ($('#replacementStatus').length) {
 
 						if (data.status == 'end') {
 							if (data.code && data.code == '#1')
-								toast('По вашему критерию в базе новостей не найдено');
+								toast('За вашим критерієм у базі новин нічого не знайдено');
 							
 							replacementAbort(true);
 						}
@@ -596,9 +596,9 @@ if ($('#replacementStatus').length) {
 	function replacementStart() {
 		$('.vh-replace-field').attr('disabled', 'disabled');
 		$('#category').prop('disabled', true).trigger('liszt:updated');
-		// отключение полей формы ...
+		// вимкнення полів форми ...
 		
-		$('#replacementStart').hide().text('Продолжить');
+		$('#replacementStart').hide().text('Продовжити');
 		$('#replacementStop, #replacementAbort').show();
 		
 		$('#replacementStatus').attr('data-status', 'working');
@@ -632,9 +632,9 @@ if ($('#replacementStatus').length) {
 		setTimeout(function () {
 			$('.vh-replace-field').removeAttr('disabled');
 			$('#category').prop('disabled', false).trigger('liszt:updated');
-			// включение полей формы ...
+			// увімкнення полів форми ...
 			
-			$('#replacementStart').text('Начать').show();
+			$('#replacementStart').text('Почати').show();
 			$('#replacementStop, #replacementAbort').hide();
 			
 			if (!end)
@@ -665,7 +665,7 @@ $('#baseForm').submit(function() {
 	var mass_action = $('#baseMassAction').val();
 
 	if (!mass_action) {
-		toast('Выберите действие');
+		toast('Оберіть дію');
 
 		return false;
 	}
@@ -679,7 +679,7 @@ $('#baseForm').submit(function() {
 		});
 
 		if (kp_ids.length == 0) {
-			toast('Вы ничего не выделили');
+			toast('Ви нічого не виділили');
 			return false;
 		}
 
